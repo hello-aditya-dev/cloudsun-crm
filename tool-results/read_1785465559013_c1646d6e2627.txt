@@ -1,0 +1,2002 @@
+     1→CLOUDSUN — COMPLETE IT CRM UI FOUNDATION
+     2→You are the principal product designer, frontend architect, senior React engineer, UX engineer and QA lead for CloudSun.
+     3→Your assignment is to transform the existing CloudSun interface into a complete, coherent and highly polished IT-industry CRM frontend foundation.
+     4→CloudSun is not a dental product, healthcare product or clinic-management product.
+     5→It is an operational CRM for IT businesses and call-centre teams serving the IT industry, including:
+     6→IT service providers
+     7→Managed service providers
+     8→SaaS companies
+     9→Software-development agencies
+    10→Cloud-service providers
+    11→Cybersecurity companies
+    12→IT infrastructure companies
+    13→Technical-support centres
+    14→B2B technology sales teams
+    15→IT implementation and consulting companies
+    16→This phase is specifically intended to complete these five areas:
+    17→Design system and visual foundation
+    18→Application shell
+    19→Routed application structure
+    20→Reusable frontend components
+    21→Contacts and conversations experience
+    22→Complete each phase properly, run tests, commit it and push it before starting the next phase.
+    23→Do not attempt to complete the entire CRM in one uncontrolled rewrite.
+    24→
+    25→1. REPOSITORY SCOPE
+    26→Original source repository
+    27→https://github.com/hello-aditya-dev/cloudsun
+    28→
+    29→The original repository contains the CloudSun design system and AI-front-desk interface.
+    30→Target CRM repository
+    31→Work only in:
+    32→https://github.com/hello-aditya-dev/cloudsun-crm
+    33→
+    34→The customer-facing product name remains:
+    35→CloudSun
+    36→
+    37→The repository name is cloudsun-crm, but the product should normally be displayed simply as CloudSun.
+    38→Repository safety requirements
+    39→Do not modify hello-aditya-dev/cloudsun.
+    40→Do not push anything to hello-aditya-dev/cloudsun.
+    41→Confirm the current working directory before editing.
+    42→Confirm the Git remote before every push.
+    43→The target remote must point only to:
+    44→https://github.com/hello-aditya-dev/cloudsun-crm.git
+    45→
+    46→Run this before the first edit and before every push:
+    47→git remote -v
+    48→git status
+    49→git branch --show-current
+    50→
+    51→Abort immediately if the remote points to the original cloudsun repository.
+    52→Do not add AI, assistant or bot attribution.
+    53→Do not use Co-Authored-By lines.
+    54→Do not rewrite or destroy existing Git history.
+    55→Do not force-push.
+    56→Do not commit secrets, .env files, generated caches or build output.
+    57→Never commit broken code.
+    58→Push after every completed and verified phase.
+    59→If the target repository does not exist, create it as a separate private repository by copying the source code without carrying over the original Git metadata.
+    60→
+    61→2. PRODUCT DEFINITION
+    62→CloudSun is:
+    63→A unified customer, lead and conversation workspace for IT sales, customer success and technical-support teams.
+    64→Primary positioning:
+    65→Every customer, conversation and opportunity. One operational workspace.
+    66→
+    67→Supporting copy:
+    68→CloudSun helps IT teams manage companies, decision-makers, enquiries, sales opportunities, support conversations and follow-ups without losing context between phone, email, WhatsApp and web chat.
+    69→
+    70→CloudSun should feel suitable for organisations with 10–200 staff members, but this phase concerns only the frontend foundation.
+    71→Do not implement or claim production support for 200 simultaneous agents during this phase.
+    72→
+    73→3. STRICT SCOPE
+    74→Complete only these areas:
+    75→A. Design system
+    76→Bring the design system from approximately 85–90% to a genuinely complete and documented frontend system.
+    77→B. Application shell
+    78→Bring the application shell from approximately 85–90% to complete desktop, tablet and mobile behaviour.
+    79→C. Routed application structure
+    80→Make every visible navigation item, deep link, browser-history action, loading state, error state and not-found state work correctly.
+    81→D. Reusable components
+    82→Create a consistent reusable component library for all current and upcoming CRM modules.
+    83→E. Contacts and conversations UI
+    84→Complete the contacts, companies, leads and unified inbox experiences using realistic IT-industry demonstration data and persistent demonstration interactions.
+    85→
+    86→4. OUT-OF-SCOPE WORK
+    87→Do not build the following during this assignment:
+    88→Real telephony
+    89→SIP infrastructure
+    90→Exotel integration
+    91→Predictive dialling
+    92→Production campaign engine
+    93→Redis
+    94→WebSocket backend
+    95→Production database repositories
+    96→Production authentication
+    97→Payment processing
+    98→Full ticketing engine
+    99→Full QA engine
+   100→Full workforce management
+   101→Real WhatsApp sending
+   102→Real email sending
+   103→Real AI-provider calls
+   104→Kubernetes
+   105→Microservice architecture
+   106→Infrastructure deployment
+   107→Backend load testing
+   108→You may preserve interfaces, adapters or placeholder boundaries for future implementation, but do not spend this phase building those systems.
+   109→Do not display fake connected integrations.
+   110→Do not claim a feature is live when it is simulated.
+   111→
+   112→5. FIRST ACTION: AUDIT THE CURRENT REPOSITORY
+   113→Before editing, inspect the repository thoroughly.
+   114→Read at minimum:
+   115→README.md
+   116→package.json
+   117→src/app/globals.css
+   118→src/config/cloudsun.ts
+   119→src/types/domain.ts
+   120→src/data/demo.ts
+   121→src/lib/demo-store.ts
+   122→src/lib/repositories.ts
+   123→src/hooks/use-demo-state.ts
+   124→src/components/cloudsun/app/AppShell.tsx
+   125→src/components/cloudsun/app/SectionScroll.tsx
+   126→src/components/cloudsun/app/sections/*
+   127→src/components/cloudsun/shared/*
+   128→src/components/ui/*
+   129→src/app/**
+   130→prisma/schema.prisma
+   131→tests/**
+   132→next.config.ts
+   133→tsconfig.json
+   134→.env.example
+   135→
+   136→Create:
+   137→docs/audit/it-crm-ui-audit.md
+   138→docs/product/it-crm-positioning.md
+   139→docs/product/frontend-scope.md
+   140→docs/product/route-map.md
+   141→docs/design/design-system.md
+   142→docs/design/component-inventory.md
+   143→
+   144→The audit must identify:
+   145→Existing components that should be reused
+   146→Existing components that should be refactored
+   147→Duplicate components
+   148→Hardcoded colours
+   149→Hardcoded demo content
+   150→Dental-specific files
+   151→Dental-specific routes
+   152→Dead links
+   153→Incomplete controls
+   154→Responsive failures
+   155→Accessibility issues
+   156→Missing empty states
+   157→Missing loading states
+   158→Missing error states
+   159→Inconsistent typography
+   160→Inconsistent spacing
+   161→Inconsistent card treatments
+   162→Inconsistent status colours
+   163→Inconsistent button hierarchy
+   164→Existing tests
+   165→Missing tests
+   166→Do not perform widespread edits before this audit is written.
+   167→
+   168→6. EXECUTION PROTOCOL
+   169→Every phase must follow this exact sequence:
+   170→Inspect the relevant implementation.
+   171→Write a short phase checklist in the implementation notes.
+   172→Implement the phase completely.
+   173→Remove dead code introduced or exposed by the work.
+   174→Run formatting where configured.
+   175→Run linting.
+   176→Run TypeScript checking.
+   177→Run relevant unit tests.
+   178→Run relevant Playwright tests.
+   179→Run the production build.
+   180→Fix every failure.
+   181→Inspect the changed interface at desktop, tablet and mobile widths.
+   182→Commit the phase.
+   183→Push the commit.
+   184→Confirm that the remote push succeeded.
+   185→Only then start the next phase.
+   186→Minimum commands after every phase:
+   187→bun run lint
+   188→bun run typecheck
+   189→bun run test
+   190→bun run build
+   191→
+   192→Run relevant browser and accessibility tests after phases that alter routes or interfaces:
+   193→bun run test:e2e
+   194→bun run test:a11y
+   195→
+   196→Do not skip a test because it fails. Diagnose and fix the failure.
+   197→Do not move to the next phase with unresolved errors.
+   198→
+   199→7. PHASE 0 — REPOSITORY SAFETY AND BASELINE
+   200→Purpose
+   201→Establish a known-good baseline and guarantee that the original repository cannot be modified accidentally.
+   202→Tasks
+   203→Confirm the target repository.
+   204→Confirm the active branch.
+   205→Confirm the remote.
+   206→Pull the latest target branch.
+   207→Install dependencies.
+   208→Run the complete current test suite.
+   209→Run the production build.
+   210→Record all pre-existing failures.
+   211→Create the audit and scope documents.
+   212→Capture the existing route inventory.
+   213→Capture the existing component inventory.
+   214→Record the initial screenshots at:
+   215→1440px desktop
+   216→1024px tablet
+   217→768px tablet
+   218→390px mobile
+   219→Do not silently fix unrelated failures before recording them.
+   220→Required commit
+   221→chore: audit and baseline CloudSun CRM frontend
+   222→
+   223→Push this commit before continuing.
+   224→
+   225→8. PHASE 1 — REMOVE DENTAL POSITIONING AND ESTABLISH IT CRM IDENTITY
+   226→Purpose
+   227→Product terminology controls every future route, component, data model and user workflow. Dental language must be removed before expanding the interface.
+   228→Required product configuration
+   229→Update the central product configuration to use:
+   230→export const product = {
+   231→  name: "CloudSun",
+   232→  shortName: "CloudSun",
+   233→  category: "IT customer operations CRM",
+   234→  eyebrow: "Customer operations for IT teams",
+   235→  tagline: "Every customer, conversation and opportunity. One operational workspace.",
+   236→  supporting:
+   237→    "CloudSun helps IT sales, support and customer-success teams manage companies, decision-makers, enquiries, opportunities and follow-ups from one shared workspace.",
+   238→  repository: "hello-aditya-dev/cloudsun-crm",
+   239→  authorIdentity: "hello-aditya-dev",
+   240→  demoModeLabel: "Demonstration workspace",
+   241→  currentYear: 2026,
+   242→};
+   243→
+   244→Improve this configuration if required, but preserve its meaning.
+   245→Remove all dental terminology
+   246→Search the entire repository for case-insensitive references to:
+   247→dental
+   248→dentist
+   249→dentistry
+   250→patient
+   251→patients
+   252→hygienist
+   253→treatment
+   254→recall
+   255→practice
+   256→clinic
+   257→clinical
+   258→implant
+   259→invisalign
+   260→whitening
+   261→post-op
+   262→emergency examination
+   263→appointment procedure
+   264→DSO
+   265→
+   266→Review every occurrence contextually.
+   267→Do not use uncontrolled global replacement.
+   268→Delete obsolete dental-only:
+   269→Routes
+   270→Components
+   271→Demo data
+   272→Types
+   273→Configuration
+   274→Pricing
+   275→Marketing content
+   276→Disclaimers
+   277→Appointment types
+   278→Emergency rules
+   279→Navigation groups
+   280→Test fixtures
+   281→Replace dental concepts
+   282→Use:
+   283→Previous concept
+   284→IT CRM concept
+   285→Patient
+   286→Contact
+   287→Patient lead
+   288→Lead
+   289→Practice
+   290→Organisation
+   291→Dental group
+   292→Multi-team IT organisation
+   293→Recall
+   294→Re-engagement
+   295→Treatment follow-up
+   296→Customer follow-up
+   297→Appointment request
+   298→Meeting, demo or callback
+   299→Front desk
+   300→Customer operations
+   301→Practice manager
+   302→Operations manager
+   303→Clinical notes
+   304→Interaction notes
+   305→Procedure
+   306→Service, project or solution
+   307→Dentist
+   308→Account owner or specialist
+   309→
+   310→IT-industry demo categories
+   311→Create realistic customer categories:
+   312→Managed IT services
+   313→Cybersecurity
+   314→Cloud migration
+   315→SaaS implementation
+   316→Network infrastructure
+   317→IT support
+   318→Software development
+   319→Data engineering
+   320→Business automation
+   321→Unified communications
+   322→IT-industry contact roles
+   323→Use roles such as:
+   324→Founder
+   325→Chief Technology Officer
+   326→Chief Information Officer
+   327→IT Director
+   328→IT Manager
+   329→Infrastructure Manager
+   330→Security Manager
+   331→Procurement Manager
+   332→Operations Director
+   333→Finance Manager
+   334→Customer Success Manager
+   335→Technical Lead
+   336→System Administrator
+   337→IT conversation topics
+   338→Use:
+   339→Demo request
+   340→Pricing enquiry
+   341→Technical-support request
+   342→Service outage
+   343→Implementation update
+   344→Security assessment
+   345→Renewal discussion
+   346→Contract question
+   347→Migration planning
+   348→Feature request
+   349→Invoice query
+   350→Escalation
+   351→Procurement process
+   352→Integration request
+   353→Training request
+   354→No customer data should be copied from real people or companies.
+   355→Required tests
+   356→Add a test or script that prevents prohibited dental terminology from returning in user-facing source files.
+   357→It may exclude:
+   358→Git history
+   359→Intentional migration documentation
+   360→Audit documents explaining what was removed
+   361→Required commit
+   362→refactor: reposition CloudSun for IT customer operations
+   363→
+   364→Push this commit before continuing.
+   365→
+   366→9. PHASE 2 — COMPLETE THE DESIGN SYSTEM
+   367→Purpose
+   368→Every future CRM screen must use the same visual grammar. A complete design system prevents inconsistent dashboards and repeated custom CSS.
+   369→Preserve CloudSun’s existing visual identity:
+   370→Warm ivory background
+   371→Near-white cards
+   372→Deep warm charcoal text
+   373→Terracotta ember accent
+   374→Forest-green supporting accent
+   375→Editorial serif headings
+   376→Clean sans-serif body type
+   377→Fine borders
+   378→Soft shadows
+   379→Restrained motion
+   380→Premium but operational appearance
+   381→Do not redesign CloudSun into a generic blue enterprise dashboard.
+   382→Complete semantic tokens
+   383→Ensure semantic tokens exist for:
+   384→Surfaces
+   385→App background
+   386→Elevated surface
+   387→Card
+   388→Popover
+   389→Sidebar
+   390→Inset area
+   391→Hover surface
+   392→Selected surface
+   393→Disabled surface
+   394→Overlay
+   395→Text
+   396→Primary text
+   397→Secondary text
+   398→Muted text
+   399→Disabled text
+   400→Inverse text
+   401→Link text
+   402→Statuses
+   403→Success
+   404→Warning
+   405→Destructive
+   406→Information
+   407→Neutral
+   408→Online
+   409→Offline
+   410→Busy
+   411→Away
+   412→Pending
+   413→Connected
+   414→Disconnected
+   415→Escalated
+   416→SLA risk
+   417→SLA breached
+   418→CRM semantics
+   419→New lead
+   420→Qualified
+   421→Opportunity
+   422→Customer
+   423→At risk
+   424→Churned
+   425→Open conversation
+   426→Waiting
+   427→Snoozed
+   428→Closed
+   429→Urgent
+   430→Do not rely on raw oklch(...) values throughout feature components.
+   431→Move repeated colours into semantic CSS variables or central configuration.
+   432→Complete typography system
+   433→Document and implement:
+   434→Display heading
+   435→Page heading
+   436→Section heading
+   437→Card title
+   438→Body
+   439→Small body
+   440→Label
+   441→Caption
+   442→Overline
+   443→Numeric KPI
+   444→Table text
+   445→Code or identifier text
+   446→Specify:
+   447→Font family
+   448→Size
+   449→Line height
+   450→Weight
+   451→Letter spacing
+   452→Intended use
+   453→Avoid excessively small text.
+   454→Important operational information must not be rendered below an accessible readable size.
+   455→Complete spacing and layout system
+   456→Standardise:
+   457→Page padding
+   458→Section gaps
+   459→Card padding
+   460→Form spacing
+   461→List-row height
+   462→Table density
+   463→Sidebar widths
+   464→Header height
+   465→Detail-panel widths
+   466→Drawer widths
+   467→Responsive breakpoints
+   468→Maximum content widths
+   469→Complete elevation and border system
+   470→Create consistent variants:
+   471→Flat
+   472→Subtle
+   473→Raised
+   474→Floating
+   475→Interactive hover
+   476→Selected
+   477→Critical
+   478→Disabled
+   479→Complete motion system
+   480→Use Motion only when it improves comprehension.
+   481→Define:
+   482→Page transition
+   483→Sidebar collapse
+   484→Drawer opening
+   485→Modal opening
+   486→Dropdown opening
+   487→List-item appearance
+   488→Status change
+   489→Toast appearance
+   490→Skeleton loading
+   491→Expand/collapse
+   492→Respect reduced-motion preferences.
+   493→Do not animate:
+   494→Every card continuously
+   495→Important tables
+   496→Long lists
+   497→Operational metrics without reason
+   498→Dark mode
+   499→Ensure every component works in both light and dark mode.
+   500→Test:
+   501→Contrast
+   502→Borders
+   503→Input backgrounds
+   504→Popovers
+   505→Tables
+   506→Charts
+   507→Status colours
+   508→Selected rows
+   509→Hover states
+   510→Empty states
+   511→Loading skeletons
+   512→Dialog overlays
+   513→Documentation
+   514→Update:
+   515→docs/design/design-system.md
+   516→
+   517→Include:
+   518→Tokens
+   519→Typography
+   520→Spacing
+   521→Elevation
+   522→Status colours
+   523→Motion principles
+   524→Responsive rules
+   525→Accessibility rules
+   526→Examples of correct and incorrect usage
+   527→Required commit
+   528→feat: complete CloudSun design system
+   529→
+   530→Push this commit before continuing.
+   531→
+   532→10. PHASE 3 — COMPLETE THE APPLICATION SHELL
+   533→Purpose
+   534→The application shell must support every future module without needing structural redesign.
+   535→Retain the existing CloudSun shell visual language, but complete its behaviour.
+   536→Desktop shell
+   537→Implement and verify:
+   538→Persistent top bar
+   539→Collapsible sidebar
+   540→Sidebar-state persistence
+   541→Workspace or organisation switcher
+   542→Current page title
+   543→Breadcrumbs where useful
+   544→Global search trigger
+   545→Notifications trigger
+   546→Help menu
+   547→Profile menu
+   548→Theme switcher
+   549→Demonstration-state label
+   550→Integration-status indicator
+   551→Responsive content area
+   552→Route-transition handling
+   553→Scroll containment
+   554→Keyboard navigation
+   555→Sidebar navigation
+   556→Use these groups for the current completed frontend:
+   557→Workspace
+   558→Overview
+   559→Inbox
+   560→Contacts
+   561→Companies
+   562→
+   563→Customer operations
+   564→Calls
+   565→Calendar
+   566→Knowledge
+   567→Automations
+   568→Analytics
+   569→
+   570→Manage
+   571→Team
+   572→Integrations
+   573→Settings
+   574→Billing
+   575→Audit log
+   576→
+   577→Only display a navigation item when its route exists and provides a meaningful screen.
+   578→Do not show dead or decorative links.
+   579→Do not show unfinished future modules such as campaigns, queues or QA as active navigation items during this phase.
+   580→They may be documented as planned, but should not clutter the live sidebar.
+   581→Sidebar requirements
+   582→Active indicator
+   583→Hover state
+   584→Focus state
+   585→Collapsed tooltips
+   586→Badge support
+   587→Group labels
+   588→Overflow scrolling
+   589→No clipped final items
+   590→Organisation card
+   591→Plan or demonstration label
+   592→Collapse control
+   593→Mobile alternative
+   594→Persist the collapsed state in local storage.
+   595→Top bar
+   596→Complete:
+   597→Current route title
+   598→Optional breadcrumb
+   599→Global search button
+   600→Command shortcut label
+   601→Notification button
+   602→Help button
+   603→User profile dropdown
+   604→Theme control
+   605→Status indicator
+   606→No button should silently do nothing.
+   607→Where a full feature is unavailable, provide a meaningful popover, dialog or clearly labelled demonstration state.
+   608→Global command palette
+   609→Implement a functional command palette.
+   610→Support:
+   611→Navigate to routes
+   612→Search contacts
+   613→Search companies
+   614→Search conversations
+   615→Create contact
+   616→Open recent records
+   617→Switch organisation in demonstration mode
+   618→Open settings
+   619→Toggle theme
+   620→Keyboard shortcut:
+   621→Ctrl/Cmd + K
+   622→
+   623→Requirements:
+   624→Keyboard accessible
+   625→Focus trapped
+   626→Searchable
+   627→Grouped results
+   628→Empty state
+   629→Escape closes
+   630→Selection navigates correctly
+   631→Notification centre
+   632→Provide:
+   633→Notification list
+   634→Read/unread state
+   635→Mark as read
+   636→Mark all as read
+   637→Link to related record
+   638→Empty state
+   639→Demonstration persistence
+   640→Use IT CRM notifications such as:
+   641→New pricing enquiry
+   642→Urgent support escalation
+   643→Renewal reminder
+   644→Assigned conversation
+   645→SLA risk
+   646→Follow-up due
+   647→Integration disconnected
+   648→Profile menu
+   649→Include:
+   650→User identity
+   651→Role
+   652→Organisation
+   653→Profile link or demonstration placeholder
+   654→Preferences
+   655→Theme
+   656→Sign out demonstration action
+   657→Tablet shell
+   658→At tablet sizes:
+   659→Sidebar may collapse to icons or a slide-over
+   660→Header content must not overflow
+   661→Search may collapse to an icon
+   662→Profile identity may shorten
+   663→Main content must remain usable
+   664→No horizontal page scroll
+   665→Mobile shell
+   666→Implement:
+   667→Mobile top bar
+   668→Slide-over navigation
+   669→Bottom navigation for the most important routes
+   670→Safe-area support
+   671→Correct scroll containment
+   672→Body-scroll locking when navigation is open
+   673→Accessible close controls
+   674→Recommended bottom navigation:
+   675→Overview
+   676→Inbox
+   677→Contacts
+   678→Companies
+   679→More
+   680→
+   681→Application infrastructure
+   682→Ensure /app has:
+   683→Loading boundary
+   684→Error boundary
+   685→Not-found state
+   686→Route transition
+   687→Suspense-safe layout
+   688→Responsive page container
+   689→Consistent page title management
+   690→Required commit
+   691→feat: complete responsive CloudSun application shell
+   692→
+   693→Push this commit before continuing.
+   694→
+   695→11. PHASE 4 — COMPLETE THE ROUTED APPLICATION STRUCTURE
+   696→Purpose
+   697→Every visible part of the application must have a reliable URL, survive refresh and support browser navigation.
+   698→Do not create a single-page state machine.
+   699→Required marketing and authentication routes
+   700→Retain or complete:
+   701→/
+   702→/product
+   703→/solutions
+   704→/pricing
+   705→/security
+   706→/integrations
+   707→/login
+   708→/signup
+   709→/forgot-password
+   710→/onboarding
+   711→
+   712→Marketing pages must use IT-industry positioning.
+   713→Authentication may remain demonstration-only during this scope, but must be truthfully labelled.
+   714→Required application routes
+   715→/app
+   716→/app/inbox
+   717→/app/inbox/[conversationId]
+   718→/app/contacts
+   719→/app/contacts/[contactId]
+   720→/app/companies
+   721→/app/companies/[companyId]
+   722→/app/calls
+   723→/app/calls/[callId]
+   724→/app/calendar
+   725→/app/knowledge
+   726→/app/automations
+   727→/app/analytics
+   728→/app/team
+   729→/app/integrations
+   730→/app/settings
+   731→/app/billing
+   732→/app/audit-log
+   733→
+   734→Route requirements
+   735→Every route must have:
+   736→Metadata title
+   737→Meaningful page heading
+   738→Loading state
+   739→Empty state
+   740→Error handling
+   741→Responsive layout
+   742→Valid direct refresh
+   743→Browser Back/Forward support
+   744→Correct active navigation
+   745→Correct breadcrumb where relevant
+   746→Not-found behaviour for invalid IDs
+   747→Detail routes
+   748→These must use URL parameters rather than only internal selection state:
+   749→/app/inbox/[conversationId]
+   750→/app/contacts/[contactId]
+   751→/app/companies/[companyId]
+   752→/app/calls/[callId]
+   753→
+   754→Selecting a row should navigate to the detail URL.
+   755→Refreshing the detail URL must reopen the same record.
+   756→Invalid IDs must display a record-specific not-found state.
+   757→Route consistency
+   758→Create one central route configuration containing:
+   759→Route ID
+   760→Label
+   761→Path
+   762→Icon
+   763→Navigation group
+   764→Mobile visibility
+   765→Search keywords
+   766→Breadcrumb information
+   767→Feature availability
+   768→Do not maintain conflicting route maps in several unrelated files.
+   769→Route testing
+   770→Create automated tests that verify:
+   771→Every sidebar link resolves
+   772→Every mobile navigation link resolves
+   773→Every route can refresh
+   774→Deep links work
+   775→Back and Forward work
+   776→Invalid record IDs show not found
+   777→Active navigation matches the current route
+   778→No old dental routes remain
+   779→No visible link points to an unavailable page
+   780→Required commit
+   781→feat: complete CloudSun routed application structure
+   782→
+   783→Push this commit before continuing.
+   784→
+   785→12. PHASE 5 — COMPLETE THE REUSABLE COMPONENT LIBRARY
+   786→Purpose
+   787→Contacts, conversations and future CRM modules must be assembled from reusable, consistent components rather than page-specific duplicated markup.
+   788→Audit the existing components before creating new ones.
+   789→Do not create a second component when an existing component can be extended safely.
+   790→Required foundation components
+   791→Complete or create:
+   792→Layout
+   793→AppPage
+   794→PageHeader
+   795→PageActions
+   796→SectionHeader
+   797→SectionScroll
+   798→DetailPageLayout
+   799→SplitPane
+   800→ResponsiveDrawer
+   801→StickyActionBar
+   802→ContentSection
+   803→Feedback states
+   804→LoadingState
+   805→PageSkeleton
+   806→TableSkeleton
+   807→DetailSkeleton
+   808→EmptyState
+   809→FilteredEmptyState
+   810→ErrorState
+   811→PermissionState
+   812→OfflineState
+   813→NotFoundState
+   814→Data display
+   815→DataTable
+   816→ResponsiveDataList
+   817→SortableHeader
+   818→Pagination
+   819→KeyValueGrid
+   820→MetricCard
+   821→MetricDelta
+   822→StatusBadge
+   823→PriorityBadge
+   824→ChannelBadge
+   825→AvatarStack
+   826→TagList
+   827→DateTimeDisplay
+   828→RelativeTime
+   829→ActivityTimeline
+   830→AuditEventRow
+   831→ProgressBar
+   832→DefinitionList
+   833→Filters and search
+   834→SearchField
+   835→FilterBar
+   836→FilterChip
+   837→SavedViewSelector
+   838→DateRangeControl
+   839→SortSelector
+   840→ViewToggle
+   841→ClearFiltersButton
+   842→Forms
+   843→FormField
+   844→FormSection
+   845→RequiredIndicator
+   846→PhoneInput
+   847→TagInput
+   848→AssigneeSelect
+   849→CompanySelect
+   850→StatusSelect
+   851→PrioritySelect
+   852→ChannelSelect
+   853→InlineEditableField
+   854→AutosaveIndicator
+   855→Actions
+   856→BulkActionBar
+   857→ActionMenu
+   858→ConfirmDialog
+   859→ArchiveDialog
+   860→DeleteDialog
+   861→CopyButton
+   862→QuickCreateMenu
+   863→ExportAction
+   864→ImportAction
+   865→CRM-specific
+   866→ContactAvatar
+   867→ContactIdentity
+   868→ContactSummary
+   869→ContactRow
+   870→ContactCard
+   871→CompanyRow
+   872→CompanyCard
+   873→ConversationRow
+   874→ConversationCard
+   875→ConversationStatusBadge
+   876→SlaIndicator
+   877→AssigneeBadge
+   878→InteractionTimeline
+   879→Composer
+   880→InternalNoteComposer
+   881→CustomerContextPanel
+   882→Component rules
+   883→Every reusable component must:
+   884→Have typed props
+   885→Use semantic design tokens
+   886→Support light and dark mode
+   887→Support keyboard navigation
+   888→Have visible focus
+   889→Avoid unnecessary client-side rendering
+   890→Avoid hidden side effects
+   891→Avoid business-specific hardcoding
+   892→Handle empty values
+   893→Handle long text
+   894→Handle narrow layouts
+   895→Expose accessible names
+   896→Support reduced motion
+   897→Component documentation
+   898→Update:
+   899→docs/design/component-inventory.md
+   900→
+   901→For each major component, record:
+   902→Purpose
+   903→Props
+   904→Variants
+   905→Accessibility notes
+   906→Responsive behaviour
+   907→Used-by screens
+   908→Do not add Storybook unless it is already configured or can be added without destabilising the project.
+   909→A dedicated internal component showcase route may be added in development mode only.
+   910→Required commit
+   911→feat: complete reusable CloudSun CRM component library
+   912→
+   913→Push this commit before continuing.
+   914→
+   915→13. PHASE 6 — COMPLETE CONTACTS, LEADS AND COMPANIES UI
+   916→Purpose
+   917→The CRM must provide a complete customer record before conversation management can be trusted.
+   918→This phase remains frontend and demonstration-repository focused.
+   919→Use the existing repository abstraction and persistent demonstration state.
+   920→Do not connect production persistence during this phase.
+   921→Domain structure
+   922→A company may have multiple contacts.
+   923→A contact may have:
+   924→Multiple phone numbers
+   925→Multiple email addresses
+   926→WhatsApp identity
+   927→Company
+   928→Role
+   929→Owner
+   930→Lead stage
+   931→Source
+   932→Tags
+   933→Notes
+   934→Consent status
+   935→DNC status
+   936→Conversations
+   937→Calls
+   938→Follow-ups
+   939→Activity events
+   940→Contact fields
+   941→Required:
+   942→Full name
+   943→Job title
+   944→Company
+   945→Primary email
+   946→Secondary email
+   947→Primary phone
+   948→Secondary phone
+   949→WhatsApp number
+   950→Location
+   951→Time zone
+   952→Preferred language
+   953→Preferred channel
+   954→Lead stage
+   955→Lead source
+   956→Account owner
+   957→Priority
+   958→Estimated value
+   959→Tags
+   960→Last interaction
+   961→Next follow-up
+   962→Marketing consent
+   963→Do-not-contact status
+   964→Notes
+   965→Created date
+   966→Updated date
+   967→
+   968→Lead stages
+   969→Use:
+   970→New
+   971→Uncontacted
+   972→Attempted
+   973→Connected
+   974→Qualified
+   975→Interested
+   976→Opportunity
+   977→Customer
+   978→At risk
+   979→Inactive
+   980→Not interested
+   981→Invalid
+   982→Do not contact
+   983→
+   984→Contact list route
+   985→Build /app/contacts as a complete CRM list.
+   986→Include:
+   987→Search
+   988→Total result count
+   989→Table view
+   990→Card view for narrow screens
+   991→Sort
+   992→Pagination
+   993→Column controls
+   994→Saved-view UI
+   995→Filter chips
+   996→Clear filters
+   997→Bulk selection
+   998→Create contact
+   999→Import action
+  1000→Export action
+  1001→Empty state
+  1002→Filtered empty state
+  1003→Loading state
+  1004→Error state
+  1005→Contact filters
+  1006→Include:
+  1007→Lead stage
+  1008→Company
+  1009→Owner
+  1010→Source
+  1011→Tag
+  1012→Priority
+  1013→Preferred channel
+  1014→Consent
+  1015→DNC
+  1016→Last interaction
+  1017→Next follow-up
+  1018→Created date
+  1019→Contact table columns
+  1020→Default:
+  1021→Contact
+  1022→Company
+  1023→Role
+  1024→Lead stage
+  1025→Owner
+  1026→Last interaction
+  1027→Next follow-up
+  1028→Preferred channel
+  1029→Priority
+  1030→
+  1031→Support configurable visible columns.
+  1032→Bulk actions
+  1033→In demonstration mode support:
+  1034→Assign owner
+  1035→Change stage
+  1036→Add tag
+  1037→Remove tag
+  1038→Archive
+  1039→Export selected
+  1040→Require confirmation for destructive or high-impact actions.
+  1041→Persist changes through the demonstration repository.
+  1042→Create contact
+  1043→Use a drawer or focused page.
+  1044→Requirements:
+  1045→Logical form sections
+  1046→Validation
+  1047→Duplicate warning
+  1048→Required fields
+  1049→Cancel confirmation if dirty
+  1050→Success feedback
+  1051→Automatically open the new contact after creation
+  1052→Contact detail route
+  1053→Build /app/contacts/[contactId].
+  1054→Header:
+  1055→Contact name
+  1056→Role
+  1057→Company
+  1058→Lead stage
+  1059→Owner
+  1060→Priority
+  1061→Preferred channel
+  1062→Quick actions
+  1063→Quick actions:
+  1064→Add note
+  1065→Start conversation demonstration
+  1066→Schedule follow-up demonstration
+  1067→Edit
+  1068→Archive
+  1069→More menu
+  1070→Detail sections:
+  1071→Overview
+  1072→Contact information
+  1073→Company
+  1074→Owner
+  1075→Lead metadata
+  1076→Tags
+  1077→Consent
+  1078→DNC
+  1079→Notes
+  1080→Custom information
+  1081→Timeline
+  1082→Unified chronological history:
+  1083→Messages
+  1084→Calls
+  1085→Internal notes
+  1086→Stage changes
+  1087→Owner changes
+  1088→Follow-ups
+  1089→System events
+  1090→Conversations
+  1091→Open conversations
+  1092→Closed conversations
+  1093→Channel
+  1094→Status
+  1095→Assignee
+  1096→Last message
+  1097→Last activity
+  1098→Calls
+  1099→Direction
+  1100→Date
+  1101→Duration
+  1102→Outcome
+  1103→Recording availability
+  1104→Summary
+  1105→Follow-ups
+  1106→Demonstration records with:
+  1107→Due date
+  1108→Type
+  1109→Owner
+  1110→Status
+  1111→Related conversation
+  1112→Editing
+  1113→Allow inline or drawer-based editing.
+  1114→Requirements:
+  1115→Validation
+  1116→Autosave or explicit save status
+  1117→Cancel
+  1118→Unsaved-change protection
+  1119→Audit-event creation in demo state
+  1120→No silent data loss
+  1121→Merge flow
+  1122→Create a safe demonstration merge flow:
+  1123→Select possible duplicate.
+  1124→Compare fields.
+  1125→Choose retained values.
+  1126→Confirm.
+  1127→Merge timelines.
+  1128→Redirect to retained contact.
+  1129→Create audit event.
+  1130→Do not permanently destroy demo data without confirmation.
+  1131→Archive flow
+  1132→Archived contacts should:
+  1133→Disappear from normal views
+  1134→Remain accessible through an archived filter
+  1135→Keep history
+  1136→Be restorable
+  1137→Companies list
+  1138→Build /app/companies.
+  1139→Include:
+  1140→Search
+  1141→Industry
+  1142→Account owner
+  1143→Customer status
+  1144→Contact count
+  1145→Open conversations
+  1146→Last activity
+  1147→Estimated account value
+  1148→Filters
+  1149→Sort
+  1150→Pagination
+  1151→Create company
+  1152→Empty states
+  1153→Company fields
+  1154→Company name
+  1155→Domain
+  1156→Industry
+  1157→Company size
+  1158→Location
+  1159→Time zone
+  1160→Account owner
+  1161→Customer status
+  1162→Estimated value
+  1163→Services of interest
+  1164→Current services
+  1165→Renewal date
+  1166→Tags
+  1167→Notes
+  1168→Created date
+  1169→Updated date
+  1170→
+  1171→Company detail route
+  1172→Build /app/companies/[companyId].
+  1173→Include:
+  1174→Company summary
+  1175→Contacts
+  1176→Open conversations
+  1177→Calls
+  1178→Activity timeline
+  1179→Services
+  1180→Notes
+  1181→Account owner
+  1182→Customer status
+  1183→Renewal information
+  1184→Quick actions
+  1185→IT-industry demo data
+  1186→Create realistic fictional companies such as:
+  1187→Northbridge Systems
+  1188→Meridian Cloudworks
+  1189→Vectorline Security
+  1190→Pinnacle Data Services
+  1191→BrightLayer Software
+  1192→AxisPoint Networks
+  1193→NovaGrid Technologies
+  1194→ClearStack Solutions
+  1195→SummitOps IT
+  1196→Harbourline Digital
+  1197→Do not use real contact information.
+  1198→Use .example email domains and fictional phone numbers.
+  1199→Required tests
+  1200→Add tests for:
+  1201→Contact search
+  1202→Contact filters
+  1203→Create contact
+  1204→Edit contact
+  1205→Archive and restore
+  1206→Bulk stage update
+  1207→Deep-link refresh
+  1208→Invalid contact ID
+  1209→Company list
+  1210→Company detail
+  1211→Contact-company navigation
+  1212→Responsive contact list
+  1213→Keyboard navigation
+  1214→Form validation
+  1215→Required commit
+  1216→feat: complete contacts leads and companies experience
+  1217→
+  1218→Push this commit before continuing.
+  1219→
+  1220→14. PHASE 7 — COMPLETE CONVERSATIONS AND UNIFIED INBOX UI
+  1221→Purpose
+  1222→CloudSun’s central value is preserving customer context across communication channels. The inbox must feel like a serious operational workspace, not a messaging mock-up.
+  1223→Use persistent demonstration data through the repository abstraction.
+  1224→Supported UI channels
+  1225→Phone
+  1226→Email
+  1227→WhatsApp
+  1228→Website chat
+  1229→Internal note
+  1230→System event
+  1231→
+  1232→All provider connections remain demonstrations unless real credentials and health checks exist.
+  1233→Conversation fields
+  1234→Conversation ID
+  1235→Contact
+  1236→Company
+  1237→Channel
+  1238→Subject
+  1239→Preview
+  1240→Status
+  1241→Priority
+  1242→Assignee
+  1243→Team
+  1244→SLA state
+  1245→Unread count
+  1246→Sentiment
+  1247→Last activity
+  1248→Created date
+  1249→Tags
+  1250→Related call
+  1251→Related follow-up
+  1252→
+  1253→Conversation statuses
+  1254→Use:
+  1255→Open
+  1256→Unassigned
+  1257→Mine
+  1258→Waiting for customer
+  1259→Waiting internally
+  1260→Needs approval
+  1261→Snoozed
+  1262→Resolved
+  1263→Closed
+  1264→Spam
+  1265→
+  1266→Priorities
+  1267→Low
+  1268→Normal
+  1269→High
+  1270→Urgent
+  1271→
+  1272→Inbox route
+  1273→Build /app/inbox as a responsive three-panel workspace on large screens:
+  1274→Left panel — views and filters
+  1275→Include:
+  1276→All
+  1277→Unassigned
+  1278→Mine
+  1279→Open
+  1280→Waiting
+  1281→Needs approval
+  1282→Snoozed
+  1283→Closed
+  1284→Spam
+  1285→Channel views
+  1286→Saved views
+  1287→Team views
+  1288→Unread counts
+  1289→Centre panel — conversation list
+  1290→Each row should display:
+  1291→Contact
+  1292→Company
+  1293→Channel
+  1294→Subject or latest message
+  1295→Assignee
+  1296→Status
+  1297→Priority
+  1298→Unread count
+  1299→SLA indicator
+  1300→Last activity
+  1301→Tags where useful
+  1302→Include:
+  1303→Search
+  1304→Sort
+  1305→Filters
+  1306→Bulk selection
+  1307→Pagination or sensible virtualised loading
+  1308→Empty state
+  1309→Filtered empty state
+  1310→Loading skeleton
+  1311→Error state
+  1312→Right panel — selected conversation
+  1313→Display:
+  1314→Contact identity
+  1315→Company
+  1316→Status
+  1317→Priority
+  1318→Assignee
+  1319→SLA state
+  1320→Channel
+  1321→Interaction history
+  1322→Message composer
+  1323→Internal-note composer
+  1324→Related context
+  1325→Quick actions
+  1326→At desktop widths, the selected conversation may appear inline.
+  1327→At smaller widths, selecting a conversation must navigate to:
+  1328→/app/inbox/[conversationId]
+  1329→
+  1330→or open a full-screen routed detail view.
+  1331→Conversation detail route
+  1332→Build /app/inbox/[conversationId].
+  1333→Requirements:
+  1334→Refresh-safe
+  1335→Browser-history-safe
+  1336→Shareable URL
+  1337→Invalid-ID state
+  1338→Mobile friendly
+  1339→Consistent with desktop selection
+  1340→No duplicated conflicting state
+  1341→Conversation header actions
+  1342→Support demonstration interactions:
+  1343→Assign
+  1344→Change status
+  1345→Change priority
+  1346→Snooze
+  1347→Mark unread
+  1348→Add tags
+  1349→Link company
+  1350→Close
+  1351→Reopen
+  1352→Mark spam
+  1353→Copy conversation link
+  1354→Every state-changing action must persist in the demo repository and create a demo audit event.
+  1355→Composer
+  1356→Support:
+  1357→Reply
+  1358→Internal note
+  1359→Channel label
+  1360→Formatting controls where appropriate
+  1361→Attachment interface
+  1362→Canned response picker
+  1363→AI rewrite controls
+  1364→Send state
+  1365→Draft persistence
+  1366→Validation
+  1367→Failure demonstration
+  1368→Retry demonstration
+  1369→Do not simulate external delivery as successful without clear labelling.
+  1370→Use statuses such as:
+  1371→Simulated
+  1372→Draft
+  1373→Pending provider
+  1374→Failed
+  1375→
+  1376→AI assistance
+  1377→Preserve useful CloudSun AI-interface patterns, but clearly label them as demonstration assistance.
+  1378→AI controls may include:
+  1379→Shorten
+  1380→Make clearer
+  1381→Make friendlier
+  1382→Make more formal
+  1383→Summarise conversation
+  1384→Suggest reply
+  1385→Extract follow-ups
+  1386→Requirements:
+  1387→User must review before sending
+  1388→Original draft must be recoverable
+  1389→AI output must be editable
+  1390→AI actions must be labelled
+  1391→No autonomous customer message sending
+  1392→Internal notes
+  1393→Internal notes must:
+  1394→Be visually distinct from customer messages
+  1395→Never appear as externally sent
+  1396→Show author
+  1397→Show timestamp
+  1398→Persist after refresh
+  1399→Create an audit event
+  1400→Contact context panel
+  1401→Display:
+  1402→Contact information
+  1403→Company
+  1404→Owner
+  1405→Lead stage
+  1406→Tags
+  1407→Consent
+  1408→DNC
+  1409→Recent conversations
+  1410→Recent calls
+  1411→Upcoming follow-up
+  1412→Notes
+  1413→Open contact
+  1414→Open company
+  1415→Interaction timeline
+  1416→Support:
+  1417→Customer messages
+  1418→Agent messages
+  1419→Internal notes
+  1420→Phone call events
+  1421→Status changes
+  1422→Assignment changes
+  1423→Priority changes
+  1424→Snooze events
+  1425→Automation events
+  1426→System events
+  1427→Events should remain chronologically ordered.
+  1428→Bulk conversation actions
+  1429→Support:
+  1430→Assign
+  1431→Change status
+  1432→Change priority
+  1433→Mark read
+  1434→Mark unread
+  1435→Add tag
+  1436→Close
+  1437→Mark spam
+  1438→Require confirmation where appropriate.
+  1439→SLA presentation
+  1440→Create a reusable SLA indicator with:
+  1441→Safe
+  1442→Approaching
+  1443→At risk
+  1444→Breached
+  1445→Paused
+  1446→The interface must explain what the timer represents.
+  1447→Do not use colour alone to communicate SLA state.
+  1448→Responsive behaviour
+  1449→Desktop
+  1450→Three-panel experience
+  1451→Resizable panel support if stable
+  1452→No body overflow
+  1453→Independent list and detail scrolling
+  1454→Tablet
+  1455→Two-panel layout
+  1456→Collapsible filters
+  1457→Context panel in drawer or tabs
+  1458→Mobile
+  1459→Inbox list route
+  1460→Full conversation detail route
+  1461→Composer remains accessible above the keyboard
+  1462→Safe-area support
+  1463→No clipped action menus
+  1464→No horizontal overflow
+  1465→Keyboard productivity
+  1466→Implement:
+  1467→Arrow-key list navigation where appropriate
+  1468→Enter to open
+  1469→Escape to close overlays
+  1470→Composer focus shortcut
+  1471→Search shortcut
+  1472→Next/previous conversation
+  1473→Accessible menu navigation
+  1474→Do not override normal browser shortcuts unnecessarily.
+  1475→Required tests
+  1476→Add tests for:
+  1477→Inbox filters
+  1478→Search
+  1479→Open conversation
+  1480→Deep-link refresh
+  1481→Browser Back and Forward
+  1482→Change status
+  1483→Change priority
+  1484→Assign conversation
+  1485→Add internal note
+  1486→Draft persistence
+  1487→Send simulated reply
+  1488→Mark unread
+  1489→Snooze
+  1490→Close and reopen
+  1491→Bulk actions
+  1492→Invalid conversation ID
+  1493→Contact-context navigation
+  1494→Mobile detail route
+  1495→Keyboard navigation
+  1496→Accessibility
+  1497→Required commit
+  1498→feat: complete CloudSun unified inbox and conversations
+  1499→
+  1500→Push this commit before continuing.
+  1501→
+  1502→15. PHASE 8 — COMPLETE DEMONSTRATION REPOSITORY AND STATE QUALITY
+  1503→Purpose
+  1504→The frontend must behave like one coherent product. Actions across contacts, companies and conversations should update related views consistently.
+  1505→Do not scatter direct localStorage access through components.
+  1506→Repository architecture
+  1507→Preserve or improve the repository interface pattern.
+  1508→Create clear interfaces such as:
+  1509→interface ContactRepository {
+  1510→  list(input: ContactListInput): Promise<ContactListResult>;
+  1511→  getById(id: string): Promise<Contact | null>;
+  1512→  create(input: CreateContactInput): Promise<Contact>;
+  1513→  update(id: string, input: UpdateContactInput): Promise<Contact>;
+  1514→  archive(id: string): Promise<void>;
+  1515→  restore(id: string): Promise<void>;
+  1516→  merge(input: MergeContactsInput): Promise<Contact>;
+  1517→}
+  1518→
+  1519→interface CompanyRepository {
+  1520→  list(input: CompanyListInput): Promise<CompanyListResult>;
+  1521→  getById(id: string): Promise<Company | null>;
+  1522→  create(input: CreateCompanyInput): Promise<Company>;
+  1523→  update(id: string, input: UpdateCompanyInput): Promise<Company>;
+  1524→}
+  1525→
+  1526→interface ConversationRepository {
+  1527→  list(input: ConversationListInput): Promise<ConversationListResult>;
+  1528→  getById(id: string): Promise<Conversation | null>;
+  1529→  update(id: string, input: UpdateConversationInput): Promise<Conversation>;
+  1530→  addMessage(input: AddMessageInput): Promise<Message>;
+  1531→  addInternalNote(input: AddInternalNoteInput): Promise<Message>;
+  1532→  bulkUpdate(input: BulkConversationUpdateInput): Promise<void>;
+  1533→}
+  1534→
+  1535→Exact implementation may differ, but maintain clean boundaries.
+  1536→Demonstration persistence requirements
+  1537→Persist:
+  1538→Created contacts
+  1539→Updated contacts
+  1540→Archived contacts
+  1541→Created companies
+  1542→Updated companies
+  1543→Conversation assignments
+  1544→Conversation statuses
+  1545→Priorities
+  1546→Snoozes
+  1547→Read/unread state
+  1548→Internal notes
+  1549→Drafts
+  1550→Simulated replies
+  1551→Tags
+  1552→Notification state
+  1553→Sidebar state
+  1554→Saved filters where implemented
+  1555→Audit events
+  1556→Data consistency
+  1557→Ensure:
+  1558→Updating a contact updates its conversation context.
+  1559→Updating a company updates linked contact displays.
+  1560→Archiving a contact does not leave broken conversation links.
+  1561→Closing a conversation updates inbox counts.
+  1562→Reading a conversation updates unread counts.
+  1563→Assigning a conversation updates relevant views.
+  1564→Adding a note updates the activity timeline.
+  1565→Creating a contact makes it globally searchable.
+  1566→Resetting the demo restores the complete seeded state.
+  1567→Demonstration-data quality
+  1568→Provide enough data to test:
+  1569→Long names
+  1570→Missing fields
+  1571→Multiple channels
+  1572→No company
+  1573→Multiple contacts in one company
+  1574→High-priority conversation
+  1575→SLA breach
+  1576→Closed conversation
+  1577→Snoozed conversation
+  1578→Unassigned conversation
+  1579→DNC contact
+  1580→Archived contact
+  1581→Empty company
+  1582→International time zone
+  1583→Long conversation thread
+  1584→Large tag set
+  1585→Use deterministic seed data.
+  1586→Migration safety
+  1587→If the demo-state format changes, handle old stored versions safely.
+  1588→Use a versioned local-storage key and migration or reset strategy.
+  1589→Do not crash when outdated demonstration data exists.
+  1590→Required commit
+  1591→refactor: harden CloudSun demonstration repositories and state
+  1592→
+  1593→Push this commit before continuing.
+  1594→
+  1595→16. PHASE 9 — RESPONSIVENESS, ACCESSIBILITY AND POLISH
+  1596→Purpose
+  1597→“Complete” means the interface works under realistic content and device constraints, not merely in one desktop screenshot.
+  1598→Viewports
+  1599→Test at minimum:
+  1600→1440 × 1000
+  1601→1280 × 800
+  1602→1024 × 768
+  1603→768 × 1024
+  1604→430 × 932
+  1605→390 × 844
+  1606→360 × 800
+  1607→
+  1608→Responsive checks
+  1609→Verify:
+  1610→No unwanted horizontal scroll
+  1611→Sidebar does not cover content
+  1612→Header does not overflow
+  1613→Long contact names truncate correctly
+  1614→Tooltips reveal truncated values where appropriate
+  1615→Tables convert or scroll intentionally
+  1616→Drawers fit within viewport
+  1617→Dialogs remain usable
+  1618→Composer remains visible
+  1619→Mobile keyboard does not hide essential actions
+  1620→Bottom navigation does not cover content
+  1621→Empty states remain balanced
+  1622→Buttons do not wrap unpredictably
+  1623→Filters remain accessible
+  1624→Long conversations remain usable
+  1625→Accessibility requirements
+  1626→Meet WCAG 2.2 AA principles where practical.
+  1627→Verify:
+  1628→Semantic landmarks
+  1629→Heading hierarchy
+  1630→Form labels
+  1631→Error messages
+  1632→Focus order
+  1633→Visible focus
+  1634→Keyboard access
+  1635→Dialog focus trapping
+  1636→Escape behaviour
+  1637→Screen-reader names
+  1638→Status announcements
+  1639→Colour contrast
+  1640→Non-colour status indicators
+  1641→Reduced motion
+  1642→Touch target sizes
+  1643→Table headers
+  1644→Icon-button labels
+  1645→Toast announcements
+  1646→Content quality
+  1647→Remove:
+  1648→AI-sounding filler
+  1649→Generic SaaS buzzwords
+  1650→Repetitive headings
+  1651→Vague button labels
+  1652→Fake success claims
+  1653→Unexplained jargon
+  1654→Placeholder lorem ipsum
+  1655→Dental terminology
+  1656→Prefer specific operational language.
+  1657→Visual consistency review
+  1658→Inspect every completed route for:
+  1659→Page padding
+  1660→Heading scale
+  1661→Card radius
+  1662→Border use
+  1663→Button hierarchy
+  1664→Empty states
+  1665→Status badges
+  1666→Filter controls
+  1667→Forms
+  1668→Drawers
+  1669→Responsive behaviour
+  1670→Dark mode
+  1671→Performance review
+  1672→Check:
+  1673→Avoidable re-renders
+  1674→Large client components
+  1675→Unbounded rendered lists
+  1676→Unnecessary animation
+  1677→Duplicate data transformations
+  1678→Expensive filtering on every render
+  1679→Oversized images
+  1680→Route-level bundle issues
+  1681→Layout shift
+  1682→Use memoisation only where evidence supports it.
+  1683→Do not add complexity for theoretical optimisation.
+  1684→Required commit
+  1685→fix: complete responsive accessible CloudSun UI foundation
+  1686→
+  1687→Push this commit before continuing.
+  1688→
+  1689→17. PHASE 10 — TESTS, DOCUMENTATION AND FINAL VERIFICATION
+  1690→Purpose
+  1691→Prove that the completed frontend foundation is coherent, reliable and ready for the next CRM development phase.
+  1692→Required tests
+  1693→Unit tests
+  1694→Cover:
+  1695→Route configuration
+  1696→Status mapping
+  1697→Contact filters
+  1698→Conversation filters
+  1699→Sorting
+  1700→Demo-state migrations
+  1701→Repository operations
+  1702→Contact merge logic
+  1703→SLA display logic
+  1704→Search normalisation
+  1705→Notification state
+  1706→Component tests
+  1707→Cover:
+  1708→Data table
+  1709→Filter bar
+  1710→Empty state
+  1711→Status badge
+  1712→Contact row
+  1713→Conversation row
+  1714→Composer
+  1715→Internal note
+  1716→Confirmation dialog
+  1717→Command palette
+  1718→End-to-end tests
+  1719→Cover:
+  1720→Navigation
+  1721→Marketing
+  1722→→ Login demonstration
+  1723→→ Application overview
+  1724→→ Every visible sidebar route
+  1725→
+  1726→Contacts
+  1727→Open contacts
+  1728→→ Search
+  1729→→ Filter
+  1730→→ Create contact
+  1731→→ Open detail
+  1732→→ Edit
+  1733→→ Add note
+  1734→→ Archive
+  1735→→ Restore
+  1736→
+  1737→Companies
+  1738→Open companies
+  1739→→ Open company
+  1740→→ Open related contact
+  1741→→ Return through browser history
+  1742→
+  1743→Inbox
+  1744→Open inbox
+  1745→→ Select conversation
+  1746→→ Change assignment
+  1747→→ Add internal note
+  1748→→ Send simulated reply
+  1749→→ Change status
+  1750→→ Refresh
+  1751→→ Confirm persistence
+  1752→
+  1753→Deep links
+  1754→Open contact URL directly
+  1755→Open company URL directly
+  1756→Open conversation URL directly
+  1757→Refresh each
+  1758→
+  1759→Mobile
+  1760→Open mobile inbox
+  1761→→ Open conversation
+  1762→→ Reply
+  1763→→ Return to list
+  1764→
+  1765→Accessibility tests
+  1766→Run Axe against all major routes.
+  1767→Route smoke test
+  1768→Verify every visible navigation URL returns a valid page.
+  1769→Required command results
+  1770→The following must pass:
+  1771→bun run lint
+  1772→bun run typecheck
+  1773→bun run test
+  1774→bun run test:e2e
+  1775→bun run test:a11y
+  1776→bun run build
+  1777→
+  1778→Do not report that a test passed unless it was executed successfully.
+  1779→Documentation
+  1780→Update:
+  1781→README.md
+  1782→docs/product/it-crm-positioning.md
+  1783→docs/product/frontend-scope.md
+  1784→docs/product/route-map.md
+  1785→docs/design/design-system.md
+  1786→docs/design/component-inventory.md
+  1787→docs/testing/frontend-testing.md
+  1788→docs/architecture/demo-repository-layer.md
+  1789→
+  1790→The README must clearly distinguish:
+  1791→Completed
+  1792→IT-industry positioning
+  1793→Design system
+  1794→Application shell
+  1795→Routed structure
+  1796→Reusable components
+  1797→Contacts
+  1798→Companies
+  1799→Unified inbox
+  1800→Conversations
+  1801→Persistent demonstration state
+  1802→Demonstration only
+  1803→Authentication
+  1804→External messages
+  1805→Telephony
+  1806→AI actions
+  1807→Integrations
+  1808→Billing
+  1809→Not yet built
+  1810→Production database repositories
+  1811→Production authentication
+  1812→Campaign engine
+  1813→Queue engine
+  1814→Live agent presence
+  1815→Telephony provider
+  1816→Ticketing
+  1817→Quality assurance
+  1818→Production analytics
+  1819→200-agent validation
+  1820→Final visual audit
+  1821→Take final screenshots at the same viewport sizes used in Phase 0.
+  1822→Compare:
+  1823→Before
+  1824→After
+  1825→Desktop
+  1826→Tablet
+  1827→Mobile
+  1828→Light mode
+  1829→Dark mode
+  1830→Resolve regressions before final completion.
+  1831→Required commit
+  1832→test: verify completed CloudSun IT CRM UI foundation
+  1833→
+  1834→Push this commit.
+  1835→Then create one final documentation commit if documentation changed after verification:
+  1836→docs: document completed CloudSun frontend foundation
+  1837→
+  1838→Push it.
+  1839→
+  1840→18. COMPLETION CRITERIA
+  1841→This assignment is complete only when all conditions below are true.
+  1842→Product identity
+  1843→CloudSun is positioned for the IT industry.
+  1844→No user-facing dental terminology remains.
+  1845→Demo data represents IT businesses and IT professionals.
+  1846→Marketing and application terminology are consistent.
+  1847→Design system
+  1848→Semantic tokens are complete.
+  1849→Typography is documented.
+  1850→Spacing is consistent.
+  1851→Status styles are centralised.
+  1852→Dark mode works.
+  1853→Motion respects user preferences.
+  1854→Repeated raw colours have been removed from feature components where practical.
+  1855→Application shell
+  1856→Desktop shell is complete.
+  1857→Tablet shell is complete.
+  1858→Mobile shell is complete.
+  1859→Sidebar collapse works.
+  1860→Sidebar state persists.
+  1861→Command palette works.
+  1862→Notifications work in demonstration state.
+  1863→Profile menu works.
+  1864→No shell controls silently do nothing.
+  1865→Routes
+  1866→Every visible navigation item resolves.
+  1867→Deep links survive refresh.
+  1868→Browser Back and Forward work.
+  1869→Invalid IDs show not found.
+  1870→Loading and error boundaries exist.
+  1871→No old dental routes remain.
+  1872→No visible dead links remain.
+  1873→Components
+  1874→Shared components are reused.
+  1875→Duplicate feature markup is reduced.
+  1876→Components are typed.
+  1877→Components are accessible.
+  1878→Components work with long content.
+  1879→Components work in light and dark mode.
+  1880→Component documentation exists.
+  1881→Contacts and companies
+  1882→Contact list works.
+  1883→Filters work.
+  1884→Search works.
+  1885→Create works.
+  1886→Edit works.
+  1887→Archive and restore work.
+  1888→Bulk actions work.
+  1889→Detail routes work.
+  1890→Companies list works.
+  1891→Company details work.
+  1892→Relationships work.
+  1893→Demonstration changes persist.
+  1894→Conversations
+  1895→Inbox views work.
+  1896→Search and filters work.
+  1897→Conversation detail works.
+  1898→Assignments work.
+  1899→Status changes work.
+  1900→Priority changes work.
+  1901→Notes work.
+  1902→Demonstration replies work.
+  1903→Drafts persist.
+  1904→Bulk actions work.
+  1905→Mobile flow works.
+  1906→Deep links work.
+  1907→Quality
+  1908→Lint passes.
+  1909→Type checking passes.
+  1910→Unit tests pass.
+  1911→End-to-end tests pass.
+  1912→Accessibility tests pass.
+  1913→Production build passes.
+  1914→Final screenshots were inspected.
+  1915→No broken or misleading features remain.
+  1916→Git
+  1917→Each phase has a clear commit.
+  1918→Each phase was pushed before the next began.
+  1919→The original source repository was not modified.
+  1920→No AI co-author attribution exists.
+  1921→No secrets are committed.
+  1922→No force-push was used.
+  1923→
+  1924→19. REQUIRED FINAL RESPONSE
+  1925→When all phases are complete, return:
+  1926→Repository state
+  1927→Repository:
+  1928→Branch:
+  1929→Remote:
+  1930→Latest commit:
+  1931→
+  1932→Phase history
+  1933→For every phase provide:
+  1934→Commit hash
+  1935→Commit message
+  1936→Push status
+  1937→Tests executed
+  1938→Test outcome
+  1939→Completed work
+  1940→Summarise:
+  1941→IT repositioning
+  1942→Design system
+  1943→Application shell
+  1944→Routes
+  1945→Reusable components
+  1946→Contacts
+  1947→Companies
+  1948→Inbox
+  1949→Conversations
+  1950→Responsive improvements
+  1951→Accessibility improvements
+  1952→Route inventory
+  1953→List every completed route.
+  1954→Demonstration behaviour
+  1955→Explain what persists and how to reset it.
+  1956→Testing
+  1957→Provide exact commands and exact outcomes.
+  1958→Remaining limitations
+  1959→Explicitly list everything still requiring future implementation.
+  1960→Do not say “fully production ready.”
+  1961→Use this conclusion only if accurate:
+  1962→The CloudSun IT CRM frontend foundation is complete. Production backend systems, authentication, telephony, realtime operations and enterprise-capacity validation remain separate future phases.
+  1963→
+  1964→FINAL EXECUTION ORDER
+  1965→Follow this exact order:
+  1966→Phase 0 — Repository safety and baseline
+  1967→Commit and push
+  1968→
+  1969→Phase 1 — IT-industry repositioning
+  1970→Commit and push
+  1971→
+  1972→Phase 2 — Design system
+  1973→Commit and push
+  1974→
+  1975→Phase 3 — Application shell
+  1976→Commit and push
+  1977→
+  1978→Phase 4 — Routed structure
+  1979→Commit and push
+  1980→
+  1981→Phase 5 — Reusable components
+  1982→Commit and push
+  1983→
+  1984→Phase 6 — Contacts, leads and companies
+  1985→Commit and push
+  1986→
+  1987→Phase 7 — Conversations and unified inbox
+  1988→Commit and push
+  1989→
+  1990→Phase 8 — Demo repository and state consistency
+  1991→Commit and push
+  1992→
+  1993→Phase 9 — Responsiveness, accessibility and polish
+  1994→Commit and push
+  1995→
+  1996→Phase 10 — Tests, documentation and final verification
+  1997→Commit and push
+  1998→
+  1999→Do not skip phases.
+  2000→Do not combine all work into one commit.
+
+[showing lines 1-2000 of 2006; use offset=2001 with limit to continue reading]
