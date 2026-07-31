@@ -123,3 +123,33 @@ Stage Summary:
 - Session management with revoke and sign-out-everywhere
 - Prisma schema documents production data model
 - All work committed locally; push to GitHub blocked by missing authentication token
+
+---
+Task ID: phase-8
+Agent: main (Z.ai Code)
+Task: Phase 8 — Complete demonstration repository and state quality
+
+Work Log:
+- Read full phase 8 spec: clean async repository interfaces (Contact/Company/Conversation), versioned persistence with migration safety, cross-entity data consistency, deterministic IT demo data covering all quality scenarios, and unit tests for repository operations / migrations / merge logic / SLA / search / notifications.
+- Audited existing state layer: Zustand store in src/lib/demo-store.ts had full entity CRUD but no repository abstraction, no merge flow, no draft persistence (InboxView used raw localStorage), and SLA state was stored denormalised with no derivation helper. No repositories.ts file existed. No test runner configured.
+- Installed vitest + jsdom + @testing-library and added test/typecheck scripts to package.json. Created vitest.config.ts (jsdom env, @/ alias) and tests/setup.ts (localStorage reset before each test).
+- Created src/lib/sla.ts: computeSlaState (derives safe/approaching/at_risk/breached/paused from slaDueAt + window), resolveSlaState (honours snoozed/waiting_customer/paused overrides), describeSlaState (never colour-only), slaMinutesRemaining.
+- Created src/lib/search.ts: normalizeSearch (lowercase + NFD diacritic strip + whitespace collapse), matchesQuery (order-independent multi-token), toHaystack (skip nullish).
+- Created src/lib/repositories.ts: async ContactRepository / CompanyRepository / ConversationRepository / TeamRepository / FollowUpRepository interfaces with full input/result types (ContactListInput, CreateContactInput, UpdateContactInput, MergeContactsInput, etc.), demo implementations wrapping useDemoStore, filtering/sorting/pagination, diacritic-insensitive search across contact/company/conversation fields, and singleton exports.
+- Extended src/lib/demo-store.ts: bumped DEMO_VERSION to 2 with migration safety (reseed entities on version mismatch, preserve UI prefs, handle malformed stores); added drafts: Record<string,string>; added mergeContacts (re-parents conversations/calls/follow-ups to target, archives source, unions tags+notes, honours fieldChoices, logs audit activity); added addInternalNote (distinct from addMessage, internal channel, does not change preview); added setConversationDraft/getConversationDraft/clearConversationDraft (centralised — no raw localStorage); hardened archiveContact to close the contact's open conversations (data consistency: no broken conversation links) and record an audit activity; hardened restoreContact with audit activity; renamed storage key to cloudsun-demo-v2.
+- Refactored src/components/cloudsun/views/InboxView.tsx: removed raw localStorage.getItem/setItem/removeItem for drafts; now uses useDemoStore setConversationDraft/getConversationDraft/clearConversationDraft so drafts participate in reset, migration and the subscription model.
+- Enriched src/data/demo.ts with missing quality scenarios: ct-23 (archived contact with long name + diacritics), ct-24 (new contact with diacritics Sven-Åke Östergren), co-11 QuartzData Microsystems (empty company — one contact, no conversations), and extended cv-2 to a 12-message long escalation thread (inbound/outbound/internal mix). Fixed pre-existing cl-4 direction "scheduled" → "outbound".
+- Fixed pre-existing TypeScript errors: InboxView m.authorId null guard on TeamAvatar, TeamAdminView Shield title→aria-label, auth-store migrate cast through unknown, tsconfig exclude examples/tests.
+- Wrote 79 unit tests across 4 files: repositories.test.ts (36: CRUD, archive/restore, merge, bulkUpdate, search, filters, pagination, drafts), demo-store.test.ts (15: persistence, reset, drafts, archive consistency, merge, addInternalNote, notifications, migration safety), sla.test.ts (17: computeSlaState bands, resolveSlaState overrides, describeSlaState, slaMinutesRemaining), search.test.ts (11: normalizeSearch, matchesQuery, toHaystack).
+- Wrote docs/architecture/demo-repository-layer.md and docs/testing/frontend-testing.md.
+- Verified: bun run lint (clean), bun run typecheck (clean), bun run test (79/79 passed).
+
+Stage Summary:
+- Clean async repository layer introduced: ContactRepository / CompanyRepository / ConversationRepository with full CRUD + merge + drafts, ready for a production Prisma swap.
+- Versioned localStorage (cloudsun-demo-v2) with migration safety: stale or malformed stores are transparently reseeded, never crash the workspace.
+- Data consistency guaranteed: archive closes open conversations, merge re-parents timelines, all mutations log audit activities.
+- Composer drafts centralised in the store (no more scattered localStorage).
+- SLA state derived from due date with paused overrides and human descriptions (never colour-only).
+- Diacritic- and case-insensitive search across contacts, companies and conversations.
+- Demo data covers every required quality scenario: long names, missing fields, multiple channels, no company, multiple contacts per company, high-priority, SLA breach, closed, snoozed, unassigned, DNC, archived, empty company, international time zones, long thread, large tag sets, diacritics.
+- 79 unit tests pass; lint and typecheck clean.

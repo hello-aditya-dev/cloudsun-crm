@@ -599,7 +599,7 @@ export const useAuthStore = create<AuthState>()(
             activeInvitationToken: null,
             onboardingDraft: { ...DEFAULT_DRAFT },
             onboardingRole: null,
-          } as AuthState;
+          } as unknown as AuthState;
         }
         return persisted as AuthState;
       },

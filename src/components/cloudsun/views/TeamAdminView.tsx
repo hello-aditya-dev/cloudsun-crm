@@ -160,7 +160,7 @@ export function TeamAdminView() {
                             )}
                           </div>
                         )}
-                        {isLastOwner && <Shield className="h-4 w-4 text-muted-foreground" title="Last owner — cannot modify" />}
+                        {isLastOwner && <Shield className="h-4 w-4 text-muted-foreground" aria-label="Last owner — cannot modify" />}
                       </td>
                     </tr>
                   );

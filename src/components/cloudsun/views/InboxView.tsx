@@ -381,7 +381,7 @@ function ConversationDetail({
   onOpenCompany,
   notFound,
 }: {
-  conversation: Conversation | null;
+  conversation: Conversation | null | undefined;
   onBack: () => void;
   contactMap: Map<string, ReturnType<typeof Object>>;
   companyMap: Map<string, ReturnType<typeof Object>>;
@@ -410,23 +410,25 @@ function ConversationDetail({
   const company = conversation?.companyId ? (companyMap as Map<string, any>).get(conversation.companyId) : null;
   const assignee = conversation?.assigneeId ? (memberMap as Map<string, any>).get(conversation.assigneeId) : null;
 
-  // Draft persistence
+  const setConversationDraft = useDemoStore((s) => s.setConversationDraft);
+  const clearConversationDraft = useDemoStore((s) => s.clearConversationDraft);
+  const storedDraft = useDemoStore((s) => (conversation ? s.drafts[conversation.id] ?? "" : ""));
+
+  // Load draft when conversation changes.
   React.useEffect(() => {
     if (!conversation) return;
-    const key = `cloudsun-draft-${conversation.id}`;
-    const saved = localStorage.getItem(key);
-    if (saved) setBody(saved);
-    else setBody("");
+    setBody(storedDraft);
+    setDraftSaved(Boolean(storedDraft));
   }, [conversation?.id]);
 
+  // Persist draft to the centralised demo store (no raw localStorage).
   React.useEffect(() => {
     if (!conversation) return;
-    const key = `cloudsun-draft-${conversation.id}`;
     if (body) {
-      localStorage.setItem(key, body);
+      setConversationDraft(conversation.id, body);
       setDraftSaved(true);
-    } else {
-      localStorage.removeItem(key);
+    } else if (storedDraft) {
+      clearConversationDraft(conversation.id);
       setDraftSaved(false);
     }
   }, [body, conversation?.id]);
@@ -469,7 +471,7 @@ function ConversationDetail({
       channel: composerMode === "note" ? "internal" : conversation.channel,
     });
     setBody("");
-    localStorage.removeItem(`cloudsun-draft-${conversation.id}`);
+    clearConversationDraft(conversation.id);
     setDraftSaved(false);
   };
 
@@ -577,7 +579,7 @@ function ConversationDetail({
                   return (
                     <div key={m.id} className={cn("flex gap-2.5", isOutbound && "flex-row-reverse")}>
                       {m.direction === "inbound" && <ContactAvatar name={m.authorName} size="sm" />}
-                      {isOutbound && <TeamAvatar initials={(memberMap as Map<string, any>).get(m.authorId)?.initials ?? "Y"} color={(memberMap as Map<string, any>).get(m.authorId)?.avatarColor ?? "oklch(0.5 0.1 60)"} size="sm" />}
+                      {isOutbound && <TeamAvatar initials={(m.authorId ? (memberMap as Map<string, any>).get(m.authorId)?.initials : undefined) ?? "Y"} color={(m.authorId ? (memberMap as Map<string, any>).get(m.authorId)?.avatarColor : undefined) ?? "oklch(0.5 0.1 60)"} size="sm" />}
                       <div className={cn("max-w-[80%]", isInternal && "mx-auto max-w-full")}>
                         {isInternal ? (
                           <div className="rounded-lg border border-warning/20 bg-warning/5 px-3 py-2">

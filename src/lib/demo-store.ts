@@ -17,7 +17,7 @@ import type {
   ViewParams,
 } from "@/types/domain";
 
-const DEMO_VERSION = 1;
+const DEMO_VERSION = 2;
 
 interface DemoState {
   /* versioning for migration safety */
@@ -34,6 +34,9 @@ interface DemoState {
   followUps: FollowUp[];
   notifications: Notification[];
   activityEvents: ActivityEvent[];
+
+  /** Per-conversation composer drafts, keyed by conversationId. */
+  drafts: Record<string, string>;
 
   /* ui state */
   sidebarCollapsed: boolean;
@@ -64,6 +67,17 @@ interface DemoState {
   bulkUpdateContacts: (ids: string[], patch: Partial<Contact>) => void;
   addContactTag: (id: string, tag: string) => void;
   removeContactTag: (id: string, tag: string) => void;
+  /**
+   * Merge the source contact into the target. The source is archived, its
+   * conversations, calls and follow-ups are re-parented to the target, and
+   * the two timelines are combined. Explicit field choices override the
+   * target's existing values. Returns the retained (target) contact id.
+   */
+  mergeContacts: (input: {
+    targetId: string;
+    sourceId: string;
+    fieldChoices?: Partial<Contact>;
+  }) => string;
 
   /* company operations */
   createCompany: (input: Partial<Company> & { name: string }) => string;
@@ -85,6 +99,16 @@ interface DemoState {
     direction: "outbound" | "internal";
     channel: Message["channel"];
   }) => void;
+  /** Add an internal note (distinct from an outbound customer message). */
+  addInternalNote: (input: {
+    conversationId: string;
+    body: string;
+  }) => void;
+
+  /* conversation drafts (centralised — never touch localStorage directly) */
+  setConversationDraft: (conversationId: string, body: string) => void;
+  getConversationDraft: (conversationId: string) => string;
+  clearConversationDraft: (conversationId: string) => void;
 
   /* notifications */
   markNotificationRead: (id: string) => void;
@@ -107,6 +131,7 @@ export const useDemoStore = create<DemoState>()(
     (set, get) => ({
       version: DEMO_VERSION,
       ...structuredClone(demoSeed),
+      drafts: {},
       sidebarCollapsed: false,
       mobileNavOpen: false,
       theme: "light",
@@ -120,6 +145,7 @@ export const useDemoStore = create<DemoState>()(
         set({
           version: DEMO_VERSION,
           ...structuredClone(demoSeed),
+          drafts: {},
           view: { view: "overview", params: {} },
           sidebarCollapsed: false,
           mobileNavOpen: false,
@@ -193,9 +219,46 @@ export const useDemoStore = create<DemoState>()(
         })),
 
       archiveContact: (id) => {
+        const contact = get().contacts.find((c) => c.id === id);
+        // Data consistency: close this contact's open conversations so the
+        // inbox does not leave broken links to an archived record. Resolved
+        // and already-closed conversations keep their status.
+        const openStatuses: Conversation["status"][] = [
+          "open", "unassigned", "mine", "waiting_customer",
+          "waiting_internal", "needs_approval",
+        ];
         set((s) => ({
           contacts: s.contacts.map((c) =>
             c.id === id ? { ...c, archived: true, updatedAt: nowISO() } : c
+          ),
+          conversations: s.conversations.map((conv) =>
+            conv.contactId === id && openStatuses.includes(conv.status)
+              ? { ...conv, status: "closed", lastActivityAt: nowISO() }
+              : conv
+          ),
+        }));
+        if (contact) {
+          const closedCount = get().conversations.filter(
+            (c) => c.contactId === id && c.status === "closed"
+          ).length;
+          get().logActivity({
+            type: "system",
+            contactId: id,
+            conversationId: null,
+            actorId: get().currentUserId,
+            actorName: get().teamMembers.find((m) => m.id === get().currentUserId)?.name ?? "User",
+            summary: "Archived a contact",
+            detail: closedCount > 0
+              ? `${contact.fullName} — ${closedCount} open conversation${closedCount === 1 ? "" : "s"} closed.`
+              : contact.fullName,
+          });
+        }
+      },
+
+      restoreContact: (id) => {
+        set((s) => ({
+          contacts: s.contacts.map((c) =>
+            c.id === id ? { ...c, archived: false, updatedAt: nowISO() } : c
           ),
         }));
         get().logActivity({
@@ -204,17 +267,66 @@ export const useDemoStore = create<DemoState>()(
           conversationId: null,
           actorId: get().currentUserId,
           actorName: get().teamMembers.find((m) => m.id === get().currentUserId)?.name ?? "User",
-          summary: "Archived a contact",
+          summary: "Restored a contact",
           detail: null,
         });
       },
 
-      restoreContact: (id) =>
+      mergeContacts: ({ targetId, sourceId, fieldChoices }) => {
+        const target = get().contacts.find((c) => c.id === targetId);
+        const source = get().contacts.find((c) => c.id === sourceId);
+        if (!target || !source) return targetId;
+
+        // Merge tags and notes (union rather than overwrite).
+        const mergedTags = Array.from(new Set([...target.tags, ...source.tags]));
+        const mergedNotes = [target.notes, source.notes]
+          .filter(Boolean)
+          .join("\n\n--- merged from " + source.fullName + " ---\n");
+
         set((s) => ({
           contacts: s.contacts.map((c) =>
-            c.id === id ? { ...c, archived: false, updatedAt: nowISO() } : c
+            c.id === targetId
+              ? {
+                  ...c,
+                  ...fieldChoices,
+                  tags: fieldChoices?.tags ?? mergedTags,
+                  notes: fieldChoices?.notes ?? mergedNotes,
+                  updatedAt: nowISO(),
+                }
+              : c.id === sourceId
+              ? { ...c, archived: true, updatedAt: nowISO() }
+              : c
           ),
-        })),
+          // Re-parent source's conversations, calls and follow-ups to target.
+          conversations: s.conversations.map((conv) =>
+            conv.contactId === sourceId
+              ? { ...conv, contactId: targetId, lastActivityAt: nowISO() }
+              : conv
+          ),
+          messages: s.messages.map((m) =>
+            // Messages themselves are keyed by conversationId; the reparenting
+            // above already routes them to the target contact. No edit needed.
+            m
+          ),
+          calls: s.calls.map((call) =>
+            call.contactId === sourceId ? { ...call, contactId: targetId } : call
+          ),
+          followUps: s.followUps.map((f) =>
+            f.contactId === sourceId ? { ...f, contactId: targetId } : f
+          ),
+        }));
+
+        get().logActivity({
+          type: "system",
+          contactId: targetId,
+          conversationId: null,
+          actorId: get().currentUserId,
+          actorName: get().teamMembers.find((m) => m.id === get().currentUserId)?.name ?? "User",
+          summary: `Merged ${source.fullName} into ${target.fullName}`,
+          detail: `Source contact archived. Conversations, calls and follow-ups re-parented.`,
+        });
+        return targetId;
+      },
 
       bulkUpdateContacts: (ids, patch) =>
         set((s) => ({
@@ -426,6 +538,57 @@ export const useDemoStore = create<DemoState>()(
         }
       },
 
+      addInternalNote: ({ conversationId, body }) => {
+        const user = get().teamMembers.find((m) => m.id === get().currentUserId);
+        const msg: Message = {
+          id: uid("m"),
+          conversationId,
+          authorId: get().currentUserId,
+          authorName: user?.name ?? "You",
+          direction: "internal",
+          channel: "internal",
+          body,
+          status: "simulated",
+          createdAt: nowISO(),
+        };
+        set((s) => ({
+          messages: [...s.messages, msg],
+          conversations: s.conversations.map((c) =>
+            c.id === conversationId
+              ? { ...c, lastActivityAt: nowISO() }
+              : c
+          ),
+        }));
+        get().logActivity({
+          type: "internal_note",
+          contactId: null,
+          conversationId,
+          actorId: get().currentUserId,
+          actorName: user?.name ?? "You",
+          summary: "Added an internal note",
+          detail: body.slice(0, 100),
+        });
+      },
+
+      setConversationDraft: (conversationId, body) =>
+        set((s) => ({
+          drafts: body
+            ? { ...s.drafts, [conversationId]: body }
+            : Object.fromEntries(
+                Object.entries(s.drafts).filter(([k]) => k !== conversationId),
+              ),
+        })),
+
+      getConversationDraft: (conversationId) =>
+        get().drafts[conversationId] ?? "",
+
+      clearConversationDraft: (conversationId) =>
+        set((s) => ({
+          drafts: Object.fromEntries(
+            Object.entries(s.drafts).filter(([k]) => k !== conversationId),
+          ),
+        })),
+
       markNotificationRead: (id) =>
         set((s) => ({
           notifications: s.notifications.map((n) =>
@@ -447,26 +610,34 @@ export const useDemoStore = create<DemoState>()(
         })),
     }),
     {
-      name: "cloudsun-demo-v1",
+      name: "cloudsun-demo-v2",
       storage: createJSONStorage(() => localStorage),
       version: DEMO_VERSION,
-      // Migration safety: if stored version mismatches, reseed entity data
-      // but preserve UI preferences where possible.
+      // Migration safety: when the persisted version does not match the
+      // current DEMO_VERSION (or the shape is unrecognised), reseed all
+      // entity data from the deterministic seed while preserving the user's
+      // UI preferences (sidebar, theme, current user, drafts). This means a
+      // stale v1 store from a previous build never crashes the workspace —
+      // it is transparently upgraded to the current shape.
       migrate: (persisted: unknown) => {
-        if (!persisted || typeof persisted !== "object") return persisted;
-        const p = persisted as Partial<DemoState>;
+        if (!persisted || typeof persisted !== "object") return undefined;
+        const p = persisted as Partial<DemoState> & { version?: number };
         if (p.version !== DEMO_VERSION) {
-          // Reseed entities, keep UI prefs
           return {
             ...structuredClone(demoSeed),
             version: DEMO_VERSION,
+            drafts: {},
             sidebarCollapsed: p.sidebarCollapsed ?? false,
             theme: p.theme ?? "light",
             currentUserId: p.currentUserId ?? "u-1",
             view: { view: "overview", params: {} },
           } as DemoState;
         }
-        return persisted as DemoState;
+        // Forward-compatible: ensure newer optional fields exist.
+        return {
+          ...(persisted as DemoState),
+          drafts: (persisted as DemoState).drafts ?? {},
+        } as DemoState;
       },
     }
   )
