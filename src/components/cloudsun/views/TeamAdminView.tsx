@@ -131,6 +131,7 @@ export function TeamAdminView() {
                           value={m.roleKey}
                           onChange={(e) => changeMemberRole(m.id, e.target.value as RoleKey)}
                           disabled={isLastOwner || (m.roleKey === "owner" && !orgMemberships.find((x) => x.userId === currentUser?.id && x.roleKey === "owner"))}
+                          aria-label={`Change role for ${m.userId}`}
                           className="h-8 rounded-lg border border-input bg-card px-2 text-xs focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                         >
                           {ROLE_LIST.map((r) => <option key={r.key} value={r.key}>{r.name}</option>)}
@@ -199,10 +200,10 @@ function InvitePanel({
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">
         <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); setError(""); }} placeholder="colleague@company.com" className="h-9 flex-1 rounded-lg border border-input bg-card px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-        <select value={role} onChange={(e) => setRole(e.target.value as RoleKey)} className="h-9 rounded-lg border border-input bg-card px-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+        <select value={role} onChange={(e) => setRole(e.target.value as RoleKey)} aria-label="Filter by role" className="h-9 rounded-lg border border-input bg-card px-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
           {ROLE_LIST.map((r) => <option key={r.key} value={r.key}>{r.name}</option>)}
         </select>
-        <select value={team} onChange={(e) => setTeam(e.target.value)} className="h-9 rounded-lg border border-input bg-card px-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+        <select value={team} onChange={(e) => setTeam(e.target.value)} aria-label="Filter by team" className="h-9 rounded-lg border border-input bg-card px-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
           <option value="">No team</option>
           {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
         </select>

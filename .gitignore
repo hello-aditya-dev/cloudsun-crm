@@ -12,6 +12,8 @@ node_modules
 
 # testing
 /coverage
+/tests/results/
+/tests/report/
 
 # next.js
 /.next/
