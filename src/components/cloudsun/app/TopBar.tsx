@@ -74,12 +74,14 @@ export function TopBar() {
         <Menu className="h-5 w-5" />
       </button>
 
-      {/* Title + breadcrumb */}
+      {/* Title + breadcrumb. Rendered as a div (not a heading) so each view's
+          PageHeader owns the single h1 for the page, keeping heading hierarchy
+          correct for assistive technology. */}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <h1 className="truncate font-display text-base font-semibold text-foreground sm:text-lg">
+          <div className="truncate font-display text-base font-semibold text-foreground sm:text-lg" aria-label={title}>
             {title}
-          </h1>
+          </div>
           <span className="hidden items-center gap-1 rounded-md border border-border bg-card px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-flex">
             <CircleDot className="h-2.5 w-2.5 text-warning" aria-hidden />
             {product.demoModeLabel}

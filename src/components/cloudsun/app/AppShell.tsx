@@ -16,7 +16,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <MobileSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar />
-        <main className="scroll-area-cs flex-1 overflow-y-auto pb-16 md:pb-0">
+        <main className="scroll-area-cs flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
           {children}
         </main>
       </div>

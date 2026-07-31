@@ -109,7 +109,7 @@ export function OverviewView() {
           {slaAtRisk.length > 0 && (
             <button
               onClick={() => navigate("inbox")}
-              className="flex items-center gap-3 rounded-xl border border-warning/30 bg-warning/5 p-4 text-left transition-colors hover:bg-warning/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex h-full items-center gap-3 rounded-xl border border-warning/30 bg-warning/5 p-4 text-left transition-colors hover:bg-warning/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-warning/15 text-warning">
                 <AlertTriangle className="h-5 w-5" />
@@ -126,14 +126,14 @@ export function OverviewView() {
           {overdueFollowUps.length > 0 && (
             <button
               onClick={() => navigate("calendar")}
-              className="flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-left transition-colors hover:bg-destructive/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex h-full items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-left transition-colors hover:bg-destructive/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-destructive/15 text-destructive">
                 <Clock className="h-5 w-5" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-foreground">{overdueFollowUps.length} follow-up overdue</p>
-                <p className="truncate text-xs text-muted-foreground">Review and reschedule</p>
+                <p className="truncate text-xs text-muted-foreground">{overdueFollowUps.map((f) => f.notes).filter(Boolean).slice(0, 2).join(", ") || "Review and reschedule"}</p>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground" />
             </button>

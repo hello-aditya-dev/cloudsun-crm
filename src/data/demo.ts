@@ -1947,7 +1947,7 @@ export const activityEvents: ActivityEvent[] = [
     actorId: null,
     actorName: "Tobias Brandt",
     summary: "Sent a WhatsApp message",
-    detail: "Reported low utilisation from the automation package.",
+    detail: "Reported low utilisation on the Cortex automation package.",
     createdAt: "2026-01-15T08:20:00.000Z",
   },
   {
@@ -1980,7 +1980,7 @@ export const activityEvents: ActivityEvent[] = [
     actorId: "u-3",
     actorName: "Lena Fischer",
     summary: "Added an internal note",
-    detail: "Coordinating with automation team on log review.",
+    detail: "Looping in automation team to review silent failure logs.",
     createdAt: "2026-01-15T08:36:00.000Z",
   },
   {

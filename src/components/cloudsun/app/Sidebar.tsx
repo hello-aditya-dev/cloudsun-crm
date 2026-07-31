@@ -60,14 +60,15 @@ export function Sidebar() {
         <button
           onClick={() => !collapsed && setOrgSwitcherOpen(!orgSwitcherOpen)}
           className={cn("flex w-full items-center gap-2.5 rounded-lg p-1 hover:bg-sidebar-accent/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring", collapsed && "justify-center")}
-          aria-label="Switch organisation"
+          aria-label={`Switch organisation. Current: ${selectedOrg?.name ?? "CloudSun"}`}
+          title={!collapsed ? undefined : selectedOrg?.name}
         >
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
             <Lucide.Sun className="h-5 w-5" aria-hidden />
           </div>
           {!collapsed && (
             <div className="min-w-0 flex-1 text-left">
-              <p className="truncate text-sm font-semibold text-sidebar-foreground">
+              <p className="truncate text-sm font-semibold text-sidebar-foreground" title={selectedOrg?.name}>
                 {selectedOrg?.name ?? "CloudSun"}
               </p>
               <p className="truncate text-xs text-muted-foreground">

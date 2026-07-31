@@ -236,7 +236,7 @@ export function ContactsView() {
           )
         ) : view === "table" ? (
           <div className="overflow-hidden rounded-xl border border-border bg-card elevation-subtle">
-            <div className="overflow-x-auto">
+            <div className="scroll-area-cs overflow-x-auto">
               <table className="w-full min-w-[720px] text-sm">
                 <thead>
                   <tr className="border-b border-border bg-surface-inset text-left text-xs text-muted-foreground">
