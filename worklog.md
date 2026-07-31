@@ -54,3 +54,34 @@ Stage Summary:
 - Lint clean, no runtime errors, verified interactive in browser
 - Git push to cloudsun-crm not performed (sandbox has no git remote configured; token was redacted in the spec)
 - Production build / e2e / a11y test commands not run (not configured in this sandbox; build is disallowed per environment rules)
+
+---
+Task ID: a3
+Agent: sub-agent (general-purpose)
+Task: Build CloudSun public landing page (LandingView.tsx)
+
+Work Log:
+- Read worklog.md, globals.css design system, shared Button component, and product config to align with CloudSun's warm editorial identity (ivory bg, terracotta ember accent, forest-green support, Fraunces serif headings via .font-display)
+- Created single-file `src/components/cloudsun/views/LandingView.tsx` (`"use client"`) exporting `LandingView({ onGetStarted, onSignIn })`
+- Implemented all 11 required sections in order, all using semantic CSS variables, `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` containers, generous `py-16 sm:py-20 lg:py-24` spacing, and `rounded-xl border border-border bg-card elevation-subtle` cards with `hover:elevation-raised`:
+  1. Public header — Sun-in-terracotta-square logo, desktop nav (Product/Solutions/Pricing/Security/Integrations), "Sign in" link, "Start CloudSun" primary button; mobile hamburger with collapsible panel; NOT sticky
+  2. Hero — eyebrow pill, large `font-display` headline with ember-accented clause, supporting copy, primary "Start your workspace" (onGetStarted) + outline "Explore the product" (scrolls to #product), "Already use CloudSun? Sign in" text link (onSignIn), and an authentic product preview card (window chrome dots, mini sidebar with nav rows, 4 fake conversation rows with avatar + bars + ember tag, detail panel with metric pill + 7-bar chart using `var(--ember)`)
+  3. Operational problem (id="integrations") — 8-channel grid: Shared inboxes, Personal Gmail, Phone calls, WhatsApp, Spreadsheets, Ticket systems, Sales pipelines, Internal messages — each with a lucide icon in a forest-tinted square
+  4. Product workflow (id="product") — 5 steps (Capture → Assign → Resolve → Follow up → Measure) with horizontal `ArrowRight` separators that rotate to vertical on mobile via `rotate-90 md:rotate-0`; each step card has numbered badge, icon, title, one-line description
+  5. Core capabilities (id="solutions") — 10 cards in `lg:grid-cols-3`, each with ember-tinted icon, `font-display` title, short description
+  6. Role-specific value — 6 cards (Organisation owner, Operations manager, Supervisor, Sales employee, Support employee, Customer-success employee) with forest-tinted icons and role-specific value props
+  7. IT-industry use cases — 8 chips in `lg:grid-cols-4` (New sales enquiry, Support escalation, Service renewal, Implementation update, Security assessment, Cloud-migration discussion, Customer onboarding, Account follow-up)
+  8. Security and control (id="security") — two-column layout: left with heading, copy, and honest "no unverified certifications" disclaimer + Shield callout; right with 7 security feature rows (Verified identities, Role-based access, Organisation isolation, Audit history, Revocable sessions, Permission-based records, Honest integration states). No invented certifications.
+  9. Plans (id="pricing") — 3 cards (Launch 10–25, Growth 26–75 featured, Scale 76–200) each with honest pricing label ("Contact for pricing" / "Demonstration access available"), "No payment processed on this site" disclaimer, and CTAs (Request pilot / Start demonstration / Contact sales) all calling onGetStarted; featured Growth card highlighted with ember ring + "Most teams start here" badge
+  10. Final CTA — centered card with Sun icon, large `font-display` headline "Create your CloudSun workspace", primary button (onGetStarted), and "Sign in to an existing workspace" link (onSignIn)
+  11. Public footer — logo + tagline, 4 link columns (Product, Solutions, Company, Legal) all wired to scroll-to-section, copyright "© 2026 CloudSun. All rights reserved.", and demo-mode label
+- Navigation: internal `onNavigate(section)` (wrapped in `useCallback`) does smooth `scrollIntoView` to anchor IDs (#product, #solutions, #pricing, #security, #integrations); also closes mobile menu when triggered from there
+- Verified: 0 ESLint errors on the file; 0 TypeScript errors attributable to LandingView (pre-existing errors in InboxView.tsx, demo.ts, examples/ and skills/ are unrelated); no indigo/blue color classes; all 11 sections present in order with correct item counts (8 channels, 5 workflow steps, 10 capabilities, 6 roles, 8 use cases, 7 security features, 3 plans)
+
+Stage Summary:
+- CloudSun public landing page delivered as a single `LandingView.tsx` client component
+- Warm editorial design system fully respected: ivory surfaces, terracotta ember accents, forest-green supporting color, Fraunces serif headings via `font-display`, semantic CSS variables, elevation utilities
+- Authentic CRM product preview built purely with CSS divs/borders (no images), showing a mini sidebar, conversation list, and metric panel
+- Honest positioning throughout: no fake testimonials, logos, user counts, certifications, or payment processing; security section explicitly disclaims unverified certifications
+- All required CTAs wired: onGetStarted (hero primary, all plan CTAs, final CTA), onSignIn (header, mobile menu, hero link, final CTA link), and onNavigate for in-page section scrolling
+- File is lint-clean, type-safe, responsive (mobile-first with sm/md/lg breakpoints), and ready to be rendered when no user is authenticated

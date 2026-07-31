@@ -18,6 +18,8 @@ import {
   CircleDot,
 } from "lucide-react";
 import { TeamAvatar } from "@/components/cloudsun/shared/ContactAvatar";
+import { useAuthStore } from "@/lib/auth-store";
+import { roleMeta } from "@/config/rbac";
 
 export function TopBar() {
   const view = useDemoStore((s) => s.view);
@@ -30,14 +32,14 @@ export function TopBar() {
   const notifications = useDemoStore((s) => s.notifications);
   const theme = useDemoStore((s) => s.theme);
   const setTheme = useDemoStore((s) => s.setTheme);
-  const teamMembers = useDemoStore((s) => s.teamMembers);
-  const currentUserId = useDemoStore((s) => s.currentUserId);
+  const authUser = useAuthStore((s) => s.currentUser);
+  const getCurrentRole = useAuthStore((s) => s.getCurrentRole);
+  const role = getCurrentRole();
 
   const navItem = getNavItem(view.view);
   const title = navItem?.label ?? "CloudSun";
 
   const unreadCount = notifications.filter((n) => !n.read).length;
-  const currentUser = teamMembers.find((m) => m.id === currentUserId);
 
   const [themeMenuOpen, setThemeMenuOpen] = React.useState(false);
   const [helpMenuOpen, setHelpMenuOpen] = React.useState(false);
@@ -209,17 +211,16 @@ export function TopBar() {
           aria-expanded={profileOpen}
         >
           <TeamAvatar
-            initials={currentUser?.initials ?? "U"}
-            color={currentUser?.avatarColor ?? "oklch(0.5 0.1 60)"}
-            status={currentUser?.status}
+            initials={authUser ? (authUser.givenName?.[0] ?? "") + (authUser.familyName?.[0] ?? "") : "U"}
+            color={authUser?.avatarColor ?? "oklch(0.5 0.1 60)"}
             size="sm"
           />
           <div className="hidden text-left lg:block">
             <p className="text-xs font-semibold leading-tight text-foreground">
-              {currentUser?.name ?? "User"}
+              {authUser?.displayName ?? "User"}
             </p>
             <p className="text-[10px] leading-tight text-muted-foreground">
-              {currentUser?.email}
+              {role ? roleMeta[role].label : authUser?.primaryEmail}
             </p>
           </div>
           <ChevronDown className="hidden h-3.5 w-3.5 text-muted-foreground lg:block" aria-hidden />

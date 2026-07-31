@@ -172,3 +172,25 @@ export const MOBILE_NAV_IDS = NAV_ITEMS.filter((n) => n.mobileVisible).map((n) =
 export function getNavItem(id: string): NavItem | undefined {
   return NAV_ITEMS.find((n) => n.id === id);
 }
+
+/**
+ * Permission requirements per view. A nav item is visible if the current
+ * role has at least one of the listed permissions. Empty array = visible
+ * to all authenticated members.
+ */
+export const VIEW_PERMISSIONS: Record<string, string[]> = {
+  overview: [],
+  inbox: ["conversations.view_all", "conversations.view_team", "conversations.view_assigned"],
+  contacts: ["contacts.view_all", "contacts.view_team", "contacts.view_assigned"],
+  companies: ["companies.view_all", "companies.view_team"],
+  calls: [],
+  calendar: [],
+  knowledge: [],
+  automations: [],
+  analytics: ["reports.view"],
+  team: ["members.view"],
+  integrations: ["integrations.view"],
+  settings: [],
+  billing: ["billing.view", "billing.manage"],
+  audit_log: ["audit.view"],
+};

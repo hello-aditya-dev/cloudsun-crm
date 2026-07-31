@@ -1,8 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// CloudSun — Prisma schema for the IT CRM production data model.
+//
+// This schema documents the production design for identity, organisation,
+// membership, role-based access, sessions and invitations. The demonstration
+// workspace uses a client-side Zustand store, but this schema defines the
+// target production database structure.
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +14,175 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/* ------------------------------------------------------------------ */
+/* Identity                                                            */
+/* ------------------------------------------------------------------ */
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String           @id @default(cuid())
+  primaryEmail        String           @unique
+  emailVerifiedAt     DateTime?
+  displayName         String?
+  givenName           String?
+  familyName          String?
+  avatarUrl           String?
+  mobileNumber        String?
+  mobileCountryCode   String?
+  mobileVerifiedAt    DateTime?
+  locale              String           @default("en")
+  timeZone            String           @default("UTC")
+  status              String           @default("active") // pending|active|restricted|suspended|deleted
+  passwordHash        String?
+  lastLoginAt         DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  externalAccounts    ExternalAccount[]
+  memberships         Membership[]
+  sessions            Session[]
+  auditEvents         AuditEvent[]
+  createdOrganisations Organisation[]   @relation("OrgCreator")
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model ExternalAccount {
+  id                   String   @id @default(cuid())
+  userId               String
+  provider             String   // google | gmail | microsoft | whatsapp | twilio
+  providerAccountId    String
+  accessTokenEncrypted String?
+  refreshTokenEncrypted String?
+  tokenExpiresAt       DateTime?
+  scopes               String   // comma-separated
+  isIdentityProvider   Boolean  @default(false) // true for Google sign-in
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id               String    @id @default(cuid())
+  userId           String
+  tokenHash        String    @unique
+  expiresAt        DateTime
+  lastActiveAt     DateTime  @default(now())
+  revokedAt        DateTime?
+  revocationReason String?
+  deviceSummary    String?
+  ipHint           String?
+  createdAt        DateTime  @default(now())
+
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/* ------------------------------------------------------------------ */
+/* Organisation & membership                                           */
+/* ------------------------------------------------------------------ */
+
+model Organisation {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  legalName       String?
+  industry        String
+  website         String?
+  country         String?
+  timeZone        String   @default("UTC")
+  defaultLanguage String   @default("en")
+  teamSizeBand    String?
+  operatingModel  String   @default("it_service_provider")
+  status          String   @default("onboarding") // onboarding|active|restricted|suspended|archived
+  createdById     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  createdBy       User       @relation("OrgCreator", fields: [createdById], references: [id])
+  memberships     Membership[]
+  teams           Team[]
+  invitations     Invitation[]
+  auditEvents     AuditEvent[]
+}
+
+model Membership {
+  id                   String    @id @default(cuid())
+  organisationId       String
+  userId               String
+  roleKey              String    // owner|administrator|operations_manager|supervisor|employee|analyst|read_only
+  status               String    @default("invited") // invited|onboarding|active|suspended|left|revoked
+  jobTitle             String?
+  employeeId           String?
+  teamId               String?
+  managerMembershipId  String?
+  joinedAt             DateTime  @default(now())
+  lastAccessAt         DateTime?
+  onboardingCompletedAt DateTime?
+  onboardingStep       Int       @default(0)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  organisation         Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organisationId, userId])
+  @@index([userId])
+  @@index([organisationId])
+}
+
+model Team {
+  id                   String   @id @default(cuid())
+  organisationId       String
+  name                 String
+  description          String?
+  managerMembershipId  String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  organisation         Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@index([organisationId])
+}
+
+model Invitation {
+  id                  String    @id @default(cuid())
+  organisationId      String
+  email               String
+  roleKey             String
+  teamId              String?
+  inviterMembershipId String
+  status              String    @default("pending") // pending|accepted|expired|revoked|rejected
+  token               String    @unique
+  expiresAt           DateTime
+  acceptedAt          DateTime?
+  createdAt           DateTime  @default(now())
+
+  organisation        Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@index([organisationId])
+  @@index([email])
+}
+
+/* ------------------------------------------------------------------ */
+/* Audit                                                               */
+/* ------------------------------------------------------------------ */
+
+model AuditEvent {
+  id              String   @id @default(cuid())
+  organisationId  String?
+  userId          String?
+  type            String   // user_signed_in|membership_created|role_changed|session_revoked|onboarding_completed|...
+  summary         String
+  detail          String?
+  ipAddress       String?
+  createdAt       DateTime @default(now())
+
+  organisation    Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  user            User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organisationId])
+  @@index([userId])
 }

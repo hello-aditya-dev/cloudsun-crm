@@ -377,3 +377,251 @@ export interface ViewState {
   view: ViewId;
   params: ViewParams;
 }
+
+/* ================================================================== */
+/* AUTHENTICATION, ORGANISATION & ACCESS CONTROL                       */
+/* ================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* Auth phase — the top-level journey state                            */
+/* ------------------------------------------------------------------ */
+
+export type AuthPhase =
+  | "public"        // landing website, not authenticated
+  | "auth"          // login / signup / otp
+  | "onboarding"    // role-specific onboarding wizard
+  | "app";          // authorised workspace
+
+/* ------------------------------------------------------------------ */
+/* Roles                                                               */
+/* ------------------------------------------------------------------ */
+
+export type RoleKey =
+  | "owner"
+  | "administrator"
+  | "operations_manager"
+  | "supervisor"
+  | "employee"
+  | "analyst"
+  | "read_only";
+
+export interface Role {
+  id: ID;
+  key: RoleKey;
+  name: string;
+  description: string;
+  isSystem: boolean;
+  permissions: string[]; // permission keys
+}
+
+/* ------------------------------------------------------------------ */
+/* Permissions                                                         */
+/* ------------------------------------------------------------------ */
+
+export type PermissionCategory =
+  | "organisation"
+  | "members"
+  | "teams"
+  | "contacts"
+  | "companies"
+  | "conversations"
+  | "integrations"
+  | "audit"
+  | "reports"
+  | "billing";
+
+export interface Permission {
+  key: string;
+  category: PermissionCategory;
+  description: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* User identity                                                       */
+/* ------------------------------------------------------------------ */
+
+export type UserStatus =
+  | "pending"
+  | "active"
+  | "restricted"
+  | "suspended"
+  | "deleted";
+
+export interface AuthUser {
+  id: ID;
+  primaryEmail: string;
+  emailVerifiedAt: ISODate | null;
+  displayName: string;
+  givenName: string;
+  familyName: string;
+  avatarUrl: string | null;
+  avatarColor: string;
+  mobileNumber: string | null;
+  mobileCountryCode: string | null;
+  mobileVerifiedAt: ISODate | null;
+  locale: string;
+  timeZone: string;
+  status: UserStatus;
+  lastLoginAt: ISODate | null;
+  createdAt: ISODate;
+  updatedAt: ISODate;
+  /** Provider used for sign-in (google | password) */
+  authProvider: "google" | "password" | null;
+}
+
+/* ------------------------------------------------------------------ */
+/* Organisation                                                        */
+/* ------------------------------------------------------------------ */
+
+export type OperatingModel =
+  | "internal_it_team"
+  | "it_service_provider"
+  | "managed_service_provider"
+  | "saas_company"
+  | "technology_vendor"
+  | "bpo_for_it"
+  | "other";
+
+export type OrgStatus =
+  | "onboarding"
+  | "active"
+  | "restricted"
+  | "suspended"
+  | "archived";
+
+export interface Organisation {
+  id: ID;
+  name: string;
+  slug: string;
+  legalName: string | null;
+  industry: string;
+  website: string;
+  country: string;
+  timeZone: string;
+  defaultLanguage: string;
+  teamSizeBand: string;
+  operatingModel: OperatingModel;
+  status: OrgStatus;
+  createdById: ID;
+  createdAt: ISODate;
+  updatedAt: ISODate;
+  /** business functions selected during onboarding */
+  businessFunctions: string[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Membership                                                          */
+/* ------------------------------------------------------------------ */
+
+export type MembershipStatus =
+  | "invited"
+  | "onboarding"
+  | "active"
+  | "suspended"
+  | "left"
+  | "revoked";
+
+export interface Membership {
+  id: ID;
+  organisationId: ID;
+  userId: ID;
+  roleKey: RoleKey;
+  status: MembershipStatus;
+  jobTitle: string;
+  employeeId: string | null;
+  teamId: ID | null;
+  managerMembershipId: ID | null;
+  joinedAt: ISODate;
+  lastAccessAt: ISODate | null;
+  onboardingCompletedAt: ISODate | null;
+  onboardingStep: number;
+  createdAt: ISODate;
+  updatedAt: ISODate;
+}
+
+/* ------------------------------------------------------------------ */
+/* Invitation                                                          */
+/* ------------------------------------------------------------------ */
+
+export type InvitationStatus =
+  | "pending"
+  | "accepted"
+  | "expired"
+  | "revoked"
+  | "rejected";
+
+export interface Invitation {
+  id: ID;
+  organisationId: ID;
+  email: string;
+  roleKey: RoleKey;
+  teamId: ID | null;
+  inviterMembershipId: ID;
+  status: InvitationStatus;
+  token: string;
+  expiresAt: ISODate;
+  acceptedAt: ISODate | null;
+  createdAt: ISODate;
+}
+
+/* ------------------------------------------------------------------ */
+/* Session                                                             */
+/* ------------------------------------------------------------------ */
+
+export interface Session {
+  id: ID;
+  userId: ID;
+  deviceSummary: string;
+  ipHint: string;
+  expiresAt: ISODate;
+  lastActiveAt: ISODate;
+  createdAt: ISODate;
+  revokedAt: ISODate | null;
+  revocationReason: string | null;
+  isCurrent: boolean;
+}
+
+/* ------------------------------------------------------------------ */
+/* Onboarding                                                          */
+/* ------------------------------------------------------------------ */
+
+export interface OnboardingStep {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface OnboardingDraft {
+  orgName: string;
+  website: string;
+  industry: string;
+  country: string;
+  timeZone: string;
+  language: string;
+  operatingModel: OperatingModel;
+  businessFunctions: string[];
+  teams: { id: string; name: string }[];
+  invites: { email: string; roleKey: RoleKey; teamId: string | null }[];
+  workingDays: string[];
+  workingHoursStart: string;
+  workingHoursEnd: string;
+  responseTarget: string;
+  notifications: {
+    email: boolean;
+    assignment: boolean;
+    urgent: boolean;
+    followUps: boolean;
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Team (extends earlier Team with org linkage)                        */
+/* ------------------------------------------------------------------ */
+
+export interface TeamWithOrg {
+  id: ID;
+  organisationId: ID;
+  name: string;
+  description: string;
+  managerMembershipId: ID | null;
+}

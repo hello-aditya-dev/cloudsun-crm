@@ -4,11 +4,14 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useDemoStore } from "@/lib/demo-store";
 import { teamRoleMeta } from "@/lib/display";
+import { useAuthStore } from "@/lib/auth-store";
+import { roleMeta } from "@/config/rbac";
 import { TeamAvatar } from "@/components/cloudsun/shared/ContactAvatar";
 import {
   User,
   Settings,
   Palette,
+  Shield,
   LogOut,
   ChevronRight,
   CircleDot,
@@ -22,6 +25,10 @@ export function ProfileMenu() {
   const teamMembers = useDemoStore((s) => s.teamMembers);
   const currentUserId = useDemoStore((s) => s.currentUserId);
   const reset = useDemoStore((s) => s.reset);
+  const authUser = useAuthStore((s) => s.currentUser);
+  const authSignOut = useAuthStore((s) => s.signOut);
+  const getCurrentRole = useAuthStore((s) => s.getCurrentRole);
+  const role = getCurrentRole();
 
   React.useEffect(() => {
     if (!open) return;
@@ -37,8 +44,9 @@ export function ProfileMenu() {
   const currentUser = teamMembers.find((m) => m.id === currentUserId);
 
   const items = [
-    { label: "Profile", icon: User, hint: "Demonstration only", onClick: () => { setOpen(false); } },
+    { label: "Profile", icon: User, hint: "Your identity", onClick: () => { navigate("settings"); setOpen(false); } },
     { label: "Preferences", icon: Settings, hint: "Workspace settings", onClick: () => { navigate("settings"); setOpen(false); } },
+    { label: "Security", icon: Shield, hint: "Sessions & identity", onClick: () => { navigate("settings", { detailId: "security" }); setOpen(false); } },
     { label: "Appearance", icon: Palette, hint: "Theme & density", onClick: () => { navigate("settings"); setOpen(false); } },
   ];
 
@@ -53,20 +61,19 @@ export function ProfileMenu() {
         {/* Identity */}
         <div className="flex items-center gap-3 rounded-lg px-3 py-3">
           <TeamAvatar
-            initials={currentUser?.initials ?? "U"}
-            color={currentUser?.avatarColor ?? "oklch(0.5 0.1 60)"}
-            status={currentUser?.status}
+            initials={authUser ? (authUser.givenName?.[0] ?? "") + (authUser.familyName?.[0] ?? "") : "U"}
+            color={authUser?.avatarColor ?? "oklch(0.5 0.1 60)"}
             size="md"
           />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-foreground">
-              {currentUser?.name ?? "User"}
+              {authUser?.displayName ?? "User"}
             </p>
             <p className="truncate text-xs text-muted-foreground">
-              {currentUser?.email}
+              {authUser?.primaryEmail}
             </p>
             <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-              {currentUser ? teamRoleMeta[currentUser.role] : "Member"}
+              {role ? roleMeta[role].label : "Member"}
             </p>
           </div>
         </div>
@@ -101,13 +108,12 @@ export function ProfileMenu() {
           ))}
         </div>
 
-        {/* Reset demo */}
+        {/* Sign out */}
         <div className="my-1 border-t border-border" />
         <button
           onClick={() => {
-            if (confirm("Reset the demonstration workspace? All local changes will be lost and seeded data restored.")) {
-              reset();
-              navigate("overview");
+            if (confirm("Sign out of CloudSun?")) {
+              authSignOut();
               setOpen(false);
             }
           }}
@@ -115,8 +121,24 @@ export function ProfileMenu() {
         >
           <LogOut className="h-4 w-4" aria-hidden />
           <span className="flex-1">
-            <span className="block text-sm font-medium">Reset demo</span>
-            <span className="block text-xs text-destructive/70">Restore seeded data</span>
+            <span className="block text-sm font-medium">Sign out</span>
+            <span className="block text-xs text-destructive/70">End your current session</span>
+          </span>
+        </button>
+        {/* Reset demo data */}
+        <button
+          onClick={() => {
+            if (confirm("Reset the demonstration workspace? All local CRM data will be restored to seeded state.")) {
+              reset();
+              setOpen(false);
+            }
+          }}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-muted-foreground hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <CircleDot className="h-4 w-4" aria-hidden />
+          <span className="flex-1">
+            <span className="block text-sm font-medium">Reset demo data</span>
+            <span className="block text-xs text-muted-foreground/70">Restore seeded CRM records</span>
           </span>
         </button>
       </div>

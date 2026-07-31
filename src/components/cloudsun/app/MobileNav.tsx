@@ -3,7 +3,9 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useDemoStore } from "@/lib/demo-store";
-import { NAV_ITEMS } from "@/config/navigation";
+import { useAuthStore } from "@/lib/auth-store";
+import { NAV_ITEMS, VIEW_PERMISSIONS } from "@/config/navigation";
+import { hasAnyPermission } from "@/config/rbac";
 import * as Lucide from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { MoreHorizontal } from "lucide-react";
@@ -18,8 +20,17 @@ export function MobileNav() {
   const setMobileNavOpen = useDemoStore((s) => s.setMobileNavOpen);
   const conversations = useDemoStore((s) => s.conversations);
   const inboxUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+  const getCurrentRole = useAuthStore((s) => s.getCurrentRole);
+  const role = getCurrentRole();
 
-  const items = NAV_ITEMS.filter((n) => n.mobileVisible);
+  const canSee = (itemId: string): boolean => {
+    if (!role) return true;
+    const required = VIEW_PERMISSIONS[itemId] ?? [];
+    if (required.length === 0) return true;
+    return hasAnyPermission(role, required as [string, ...string[]]);
+  };
+
+  const items = NAV_ITEMS.filter((n) => n.mobileVisible && canSee(n.id));
   // Add "More" item
   const navItems = [...items, {
     id: "more" as const,
