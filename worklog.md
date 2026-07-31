@@ -85,3 +85,41 @@ Stage Summary:
 - Honest positioning throughout: no fake testimonials, logos, user counts, certifications, or payment processing; security section explicitly disclaims unverified certifications
 - All required CTAs wired: onGetStarted (hero primary, all plan CTAs, final CTA), onSignIn (header, mobile menu, hero link, final CTA link), and onNavigate for in-page section scrolling
 - File is lint-clean, type-safe, responsive (mobile-first with sm/md/lg breakpoints), and ready to be rendered when no user is authenticated
+
+---
+Task ID: a1-a8
+Agent: main (Z.ai Code)
+Task: CloudSun landing website, authentication, onboarding and role-based access master build
+
+Work Log:
+- Read full 3370-line spec for landing site, Google auth, OTP, org creation, RBAC, onboarding, team admin, sessions
+- Extended domain types with auth models (AuthUser, Organisation, Membership, Invitation, Session, Role, Permission, OnboardingDraft, AuthPhase)
+- Created RBAC config (src/config/rbac.ts): 7 roles, 35 permissions across 10 categories, onboarding step definitions per role, role-specific default views, hasPermission/hasAnyPermission helpers
+- Created auth store (src/lib/auth-store.ts): Zustand persistent store managing authPhase, currentUser, organisations, memberships, invitations, sessions, selectedOrgId, onboarding draft, with full CRUD for orgs/memberships/invitations/sessions
+- Updated Prisma schema with production data models (User, ExternalAccount, Session, Organisation, Membership, Team, Invitation, AuditEvent)
+- Built landing website (LandingView.tsx) via subagent: 11 sections (header, hero, problem, workflow, capabilities, role value, use cases, security, plans, final CTA, footer) with authentic CRM product preview
+- Built auth views (AuthView.tsx): Google sign-in (simulated, identity-only scopes), email/password fallback, 6-digit OTP input with auto-advance/paste/resend countdown/expiry/attempt limits, mobile entry step
+- Built onboarding wizard (OnboardingView.tsx): role-specific steps (owner 12-step, admin 10, ops manager 10, supervisor 9, employee 7, analyst 5, read-only 4), org creation, business functions, teams, roles review, invite managers/employees, customer data, integrations, preferences, security review, launch summary, with progress bar and resumable state
+- Built team admin view (TeamAdminView.tsx): member list with role changes, suspend/reactivate, last-owner protection, invitation creation with email-role-team assignment
+- Built security settings (SecuritySettingsView.tsx): identity verification, active sessions with revoke, sign out everywhere, security notices
+- Built permission denied view (PermissionDeniedView.tsx) for RBAC enforcement
+- Updated Sidebar with org switcher dropdown and permission-based nav filtering
+- Updated MobileNav with permission-based filtering
+- Updated TopBar to show auth user identity and role label
+- Updated ProfileMenu with auth user identity, Security link, Sign out, Reset demo data
+- Updated page.tsx to route between 4 auth phases (public -> auth -> onboarding -> app) with permission checks
+- Updated navigation config with VIEW_PERMISSIONS mapping
+- Fixed runtime ReferenceError (missing useDemoStore import in TeamAdminView)
+- Verified via Agent Browser: full flow landing -> signup -> Google -> OTP -> org creation -> 12-step onboarding -> app workspace -> team admin -> security settings -> sign out -> back to landing
+- Lint clean, no console errors
+- Committed: 122e8ed "feat: add landing website, authentication, onboarding and role-based access"
+- Remote configured (origin -> hello-aditya-dev/cloudsun-crm) but push failed (no GitHub token available)
+
+Stage Summary:
+- Complete customer-entry and employee-access journey implemented as client-side phased architecture
+- 7 roles with 35 explicit permissions, permission-based navigation and protected views
+- Role-specific onboarding for all 7 roles with resumable progress
+- Team administration with invitations, role changes, last-owner protection
+- Session management with revoke and sign-out-everywhere
+- Prisma schema documents production data model
+- All work committed locally; push to GitHub blocked by missing authentication token
